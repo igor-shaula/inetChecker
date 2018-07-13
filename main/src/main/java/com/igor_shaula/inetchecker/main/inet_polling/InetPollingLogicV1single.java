@@ -1,4 +1,3 @@
-/*
 package com.igor_shaula.inetchecker.main.inet_polling;
 
 import android.support.annotation.NonNull;
@@ -7,8 +6,8 @@ import com.igor_shaula.inetchecker.main.utils.L;
 
 import java.io.IOException;
 
+import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -73,10 +72,10 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         final ResponseBody[] responseBody = new ResponseBody[1];
         // A connection to https://www.google.com/ was leaked. Did you forget to close a response body?
 
-        okHttpClient.newCall(bankRequest).enqueue(new Callback() {
+        okHttpClient.newCall(googleRequest).enqueue(new Callback() {
 
             @Override
-            public synchronized void onFailure(Request request, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 // immediately detecting timeout - even before logging \\
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onFailure in " + currentMillisNow);
@@ -103,7 +102,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
             }
 
             @Override
-            public synchronized void onResponse(Response response) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 // immediately detecting timeout - even before logging \\
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
@@ -124,11 +123,9 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
                 appointNextGenerationConsideringThisDelay(timeForThisRequest);
 
                 // next block of actions serves only for avoiding internal OkHTTP warnings \\
-                try {
-                    responseBody[0] = response.body();
+                responseBody[0] = response.body();
+                if (responseBody[0] != null) {
                     responseBody[0].close(); // not needed if response's body-method hasn't been called \\
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -156,4 +153,4 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         delayedSingleTaskEngine.appointNextGeneration(pollingRunnable, delayBeforeNextGeneration);
 //        L.v(CN, "askHost ` onResponse ` new oneGenerationExecutor scheduled in: " + delayBeforeNextGeneration);
     }
-}*/
+}

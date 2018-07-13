@@ -12,6 +12,7 @@ public abstract class InetPollingLogic {
 
     private static final String CN = "InetPollingLogic";
 
+    static final String HOST_GOOGLE = "google.com";
     //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG\\
     static final long POLLING_DELAY = 1000; // millis \\
     //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG \\
@@ -20,9 +21,9 @@ public abstract class InetPollingLogic {
     @NonNull
     final OkHttpClient okHttpClient = new OkHttpClient();
     @NonNull
-    final Request bankRequest = new Request.Builder()
+    final Request googleRequest = new Request.Builder()
 //            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
-            .url("google.com") // this should be changed later \\
+            .url(HOST_GOOGLE) // this should be changed later \\
             .get()
             .build();
     @NonNull
@@ -59,7 +60,7 @@ public abstract class InetPollingLogic {
     @NonNull
     public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
         if (thisInstance == null) {
-//            thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
+            thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
         } else {
             thisInstance.consumerLink = pollingResultsConsumer;
             L.w(CN, "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
