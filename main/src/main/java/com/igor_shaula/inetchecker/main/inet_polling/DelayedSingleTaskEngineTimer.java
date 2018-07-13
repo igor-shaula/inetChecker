@@ -1,7 +1,9 @@
-package com.igor_shaula.inetchecker.main;
+package com.igor_shaula.inetchecker.main.inet_polling;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.igor_shaula.inetchecker.main.utils.L;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,8 +15,7 @@ final class DelayedSingleTaskEngineTimer {
     private Timer jobTimer;
 
     //    @Override
-/*
-    void launchPollingEngineAfter(long delay, @NonNull final InetPollingLogicV1 inetPollingLogic) {
+    void launchPollingEngineAfter(long delay, @NonNull final InetPollingLogic inetPollingLogic) {
         destroyPollingEngineNow();
         jobTimer = new Timer("TimerToDeleteShortestCar", true);
         final TimerTask ttRemove = new TimerTask() {
@@ -31,9 +32,8 @@ final class DelayedSingleTaskEngineTimer {
             }
         };
         jobTimer.schedule(ttRemove, delay);
-//        L.d(CN, "runTimerToDeleteShortestCar ` jobTimer scheduled for " + delay);
+        L.d(CN, "runTimerToDeleteShortestCar ` jobTimer scheduled for " + delay);
     }
-*/
 
     //    @Override
     boolean isOneGenerationExecutorAlive() {
@@ -42,11 +42,11 @@ final class DelayedSingleTaskEngineTimer {
 
     //    @Override
     void destroyPollingEngineNow() {
-//        L.v(CN, "stopCurrentGeneration ` nothing to do here for handler");
+        L.v(CN, "stopCurrentGeneration ` nothing to do here for handler");
         if (jobTimer != null) {
             jobTimer.cancel();
             jobTimer = null;
-//            L.d(CN, "stopTimerToDeleteShortestCar ` jobTimer cancelled and nulled");
+            L.d(CN, "stopTimerToDeleteShortestCar ` jobTimer cancelled and nulled");
         }
     }
 }

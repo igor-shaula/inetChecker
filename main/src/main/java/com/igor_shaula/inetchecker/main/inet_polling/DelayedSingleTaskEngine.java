@@ -1,10 +1,8 @@
-package com.igor_shaula.inetchecker.main;
+package com.igor_shaula.inetchecker.main.inet_polling;
 
 import android.support.annotation.NonNull;
 
 abstract class DelayedSingleTaskEngine {
-
-//    protected boolean isNextCallGenerationAllowed;
 
     abstract void appointNextGeneration(@NonNull Runnable task, long delay);
 
