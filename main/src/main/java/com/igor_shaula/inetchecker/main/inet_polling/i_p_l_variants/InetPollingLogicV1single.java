@@ -1,7 +1,9 @@
-package com.igor_shaula.inetchecker.main.inet_polling;
+package com.igor_shaula.inetchecker.main.inet_polling.i_p_l_variants;
 
 import android.support.annotation.NonNull;
 
+import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
+import com.igor_shaula.inetchecker.main.inet_polling.PollingResultsConsumer;
 import com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants.DelayedSingleTaskEngineExecutor;
 import com.igor_shaula.inetchecker.main.utils.L;
 
@@ -16,7 +18,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 
     private static final String CN = "InetPollingLogicV1single";
 
-    InetPollingLogicV1single(@NonNull PollingResultsConsumer consumerLink) {
+    public InetPollingLogicV1single(@NonNull PollingResultsConsumer consumerLink) {
         L.v(CN); // detection of used variant \\
         this.consumerLink = consumerLink;
 

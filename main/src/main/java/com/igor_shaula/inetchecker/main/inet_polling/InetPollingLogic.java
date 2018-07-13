@@ -3,6 +3,7 @@ package com.igor_shaula.inetchecker.main.inet_polling;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.igor_shaula.inetchecker.main.inet_polling.i_p_l_variants.InetPollingLogicV1single;
 import com.igor_shaula.inetchecker.main.utils.L;
 
 import okhttp3.OkHttpClient;
@@ -12,22 +13,22 @@ public abstract class InetPollingLogic {
 
     private static final String CN = "InetPollingLogic";
 
-    static final String HOST_GOOGLE = "google.com";
+    private static final String HOST_GOOGLE = "google.com";
     //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG\\
-    static final long POLLING_DELAY = 1000; // millis \\
+    protected static final long POLLING_DELAY = 1000; // millis \\
     //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG \\
-    static final long POLLING_TIMEOUT = 3000; // millis \\
+    protected static final long POLLING_TIMEOUT = 3000; // millis \\
 
     @NonNull
-    final OkHttpClient okHttpClient = new OkHttpClient();
+    protected final OkHttpClient okHttpClient = new OkHttpClient();
     @NonNull
-    final Request googleRequest = new Request.Builder()
+    protected final Request googleRequest = new Request.Builder()
 //            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(HOST_GOOGLE) // this should be changed later \\
             .get()
             .build();
     @NonNull
-    final Runnable pollingRunnable = new Runnable() {
+    protected final Runnable pollingRunnable = new Runnable() {
         // main holder of payload to be done right after the new generation is started \\
         @Override
         public void run() {
@@ -41,18 +42,18 @@ public abstract class InetPollingLogic {
             }
         }
     };
-    boolean isWaitingForFirstResultFromPolling = true;
-    boolean isPollingAllowedInGeneral;
-    long oneGenerationAbsTime;
+    protected boolean isWaitingForFirstResultFromPolling = true;
+    protected boolean isPollingAllowedInGeneral;
+    protected long oneGenerationAbsTime;
 
     // link to invoking class back - to change main flag & check connectivity which requires Context \\
     @Nullable
-    PollingResultsConsumer consumerLink;
+    protected PollingResultsConsumer consumerLink;
     // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling \\
     @SuppressWarnings("NullableProblems")
     // initialized in InetPollingLogicV1single constructor & used only there \\
     @NonNull
-    DelayedSingleTaskEngine delayedSingleTaskEngine;
+    protected DelayedSingleTaskEngine delayedSingleTaskEngine;
 
     @Nullable
     private static InetPollingLogic thisInstance;
