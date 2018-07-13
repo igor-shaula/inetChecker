@@ -2,11 +2,11 @@ package com.igor_shaula.inetchecker.main.inet_polling;
 
 import android.support.annotation.NonNull;
 
-abstract class DelayedSingleTaskEngine {
+public abstract class DelayedSingleTaskEngine {
 
-    abstract void appointNextGeneration(@NonNull Runnable task, long delay);
+    public abstract void appointNextGeneration(@NonNull Runnable task, long delay);
 
-    abstract boolean isCurrentGenerationAlive();
+    public abstract boolean isCurrentGenerationAlive();
 
-    abstract void stopCurrentGeneration();
+    public abstract void stopCurrentGeneration();
 }

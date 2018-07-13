@@ -2,6 +2,7 @@ package com.igor_shaula.inetchecker.main.inet_polling;
 
 import android.support.annotation.NonNull;
 
+import com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants.DelayedSingleTaskEngineExecutor;
 import com.igor_shaula.inetchecker.main.utils.L;
 
 import java.io.IOException;

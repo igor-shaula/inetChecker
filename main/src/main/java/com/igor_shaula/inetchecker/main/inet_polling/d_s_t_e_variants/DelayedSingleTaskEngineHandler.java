@@ -1,10 +1,11 @@
-package com.igor_shaula.inetchecker.main.inet_polling;
+package com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.igor_shaula.inetchecker.main.inet_polling.DelayedSingleTaskEngine;
 import com.igor_shaula.inetchecker.main.utils.L;
 
 final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
@@ -14,7 +15,7 @@ final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
     private Handler handler;
 
     @Override
-    void appointNextGeneration(@NonNull Runnable task, long delay) {
+    public void appointNextGeneration(@NonNull Runnable task, long delay) {
         if (handler == null) {
             handler = new Handler(Looper.getMainLooper());
         }
@@ -24,12 +25,12 @@ final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
     }
 
     @Override
-    boolean isCurrentGenerationAlive() {
+    public boolean isCurrentGenerationAlive() {
         return handler != null;
     }
 
     @Override
-    void stopCurrentGeneration() {
+    public void stopCurrentGeneration() {
 //        isNextCallGenerationAllowed = false;
         L.v(CN, "stopCurrentGeneration ` nothing to do here for handler");
         handler = null;
