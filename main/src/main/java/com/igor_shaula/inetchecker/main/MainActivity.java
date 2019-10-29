@@ -1,16 +1,26 @@
 package com.igor_shaula.inetchecker.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
+import com.igor_shaula.inetchecker.main.inet_polling.PollingResultsConsumer;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
+    @Nullable
+    private TextView tvStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +30,55 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        tvStatus = findViewById(R.id.tvStatus);
+
         final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fab.setImageResource(fab.isActivated() ?
-                        android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play);
+                if (fab.isActivated()) {
+                    togglePolling(true);
+                    fab.setImageResource(android.R.drawable.ic_media_pause);
+                    fab.setActivated(false);
+                } else {
+                    togglePolling(false);
+                    fab.setImageResource(android.R.drawable.ic_media_play);
+                    fab.setActivated(true);
+                }
             }
         });
+    }
+
+    private void togglePolling(boolean launchFlag) {
+        PollingResultsConsumer pollingResultsConsumer = new PollingResultsConsumer() {
+
+            @Override
+            public boolean isConnectivityReadySyncCheck() {
+                return true;
+            }
+
+            @Override
+            public void onTogglePollingState(boolean isPollingActive) {
+                Log.d(TAG , "onTogglePollingState: isPollingActive = " + isPollingActive);
+            }
+
+            @Override
+            public void onFirstResultReceived(boolean isInetAvailable) {
+                Log.d(TAG , "onFirstResultReceived: isInetAvailable = " + isInetAvailable);
+            }
+
+            @Override
+            public void onInetStateChanged(boolean isAvailable) {
+                Log.d(TAG , "onInetStateChanged: isAvailable = " + isAvailable);
+            }
+        };
+        final InetPollingLogic inetPollingLogic = InetPollingLogic.getInstance(pollingResultsConsumer);
+        inetPollingLogic.toggleInetCheckNow(launchFlag);
+        if (inetPollingLogic.isPollingActive()) {
+            tvStatus.setText("polling is active");
+        } else {
+            tvStatus.setText("polling is disabled");
+        }
     }
 
     @Override

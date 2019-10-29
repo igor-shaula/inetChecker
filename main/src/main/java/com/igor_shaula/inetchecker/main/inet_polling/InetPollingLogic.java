@@ -13,7 +13,7 @@ public abstract class InetPollingLogic {
 
     private static final String CN = "InetPollingLogic";
 
-    private static final String HOST_GOOGLE = "google.com";
+    private static final String HOST_GOOGLE = "http://google.com";
     //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG\\
     protected static final long POLLING_DELAY = 1000; // millis \\
     //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG \\

@@ -250,7 +250,7 @@
       "throws_keyword_wrap": "off",
       "throws_list_wrap": "off",
       "use_external_annotations": false,
-      "use_fq_class_names": true,
+      "use_fq_class_names": false,
       "use_single_class_imports": true,
       "variable_annotation_wrap": "off",
       "visibility": "public",
