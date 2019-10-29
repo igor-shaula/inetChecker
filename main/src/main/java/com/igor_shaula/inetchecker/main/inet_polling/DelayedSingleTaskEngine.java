@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public abstract class DelayedSingleTaskEngine {
 
-    public abstract void appointNextGeneration(@NonNull Runnable task, long delay);
+    public abstract void appointNextGeneration(@NonNull Runnable task , long delay);
 
     public abstract boolean isCurrentGenerationAlive();
 

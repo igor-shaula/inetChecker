@@ -64,7 +64,7 @@ public abstract class InetPollingLogic {
             thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
         } else {
             thisInstance.consumerLink = pollingResultsConsumer;
-            L.w(CN, "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
+            L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
         }
         return thisInstance;
     }

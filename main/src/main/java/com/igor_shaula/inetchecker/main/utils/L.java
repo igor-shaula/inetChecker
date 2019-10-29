@@ -1,13 +1,14 @@
 package com.igor_shaula.inetchecker.main.utils;
 
 import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.Log;
 
 import com.igor_shaula.inetchecker.main.BuildConfig;
 
-@SuppressWarnings({"WeakerAccess", "unused", "UnusedReturnValue"})
+@SuppressWarnings({"WeakerAccess" , "unused" , "UnusedReturnValue"})
 
 @TypeDoc(createdBy = "Igor Shaula", createdOn = "30-05-2018", purpose = "" +
         "the most minimalistic & useful wrapper for local logging," +
@@ -71,9 +72,9 @@ public final class L {
         */
         if (Build.VERSION.SDK_INT <= 23) {
             // to avoid IllegalArgumentException i decided to take only first 23 of given characters \\
-            L.tag23 = tag23.substring(0, 22);
+            L.tag23 = tag23.substring(0 , 22);
             // i think in this case user should be notified about such a change \\
-            Log.i(L.tag23, TAG_SHORTENED_TO_23_SYMBOLS);
+            Log.i(L.tag23 , TAG_SHORTENED_TO_23_SYMBOLS);
         } else {
             L.tag23 = tag23;
         }
@@ -87,8 +88,8 @@ public final class L {
     public static void setDivider(@NonNull String divider) {
         // i decided to restrict divider's length to reasonable limit (to avoid too long inner separators) \\
         if (divider.length() > 10) {
-            L.divider = divider.substring(0, 9);
-            Log.i(tag23, DIVIDER_SHORTENED_TO_10_SYMBOLS);
+            L.divider = divider.substring(0 , 9);
+            Log.i(tag23 , DIVIDER_SHORTENED_TO_10_SYMBOLS);
         }
         L.divider = divider;
     }
@@ -101,8 +102,8 @@ public final class L {
     public static void setConnector(@NonNull String connector) {
         // i decided to restrict connector's length to reasonable limit (to avoid too long inner connectors) \\
         if (connector.length() > 10) {
-            L.connector = connector.substring(0, 9);
-            Log.i(tag23, CONNECTOR_SHORTENED_TO_10_SYMBOLS);
+            L.connector = connector.substring(0 , 9);
+            Log.i(tag23 , CONNECTOR_SHORTENED_TO_10_SYMBOLS);
         }
         L.connector = connector;
     }
@@ -146,27 +147,27 @@ public final class L {
     // FASTEST & SIMPLEST ONE_ARGUMENT API =========================================================
 
     public static int v(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.v(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.v(tag23 , message) : -1;
     }
 
     public static int d(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.d(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.d(tag23 , message) : -1;
     }
 
     public static int i(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.i(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.i(tag23 , message) : -1;
     }
 
     public static int w(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.w(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.w(tag23 , message) : -1;
     }
 
     public static int e(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.e(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.e(tag23 , message) : -1;
     }
 
     public static int a(@Nullable final String message) {
-        return USE_LOGGING && isLogAllowed ? Log.wtf(tag23, message) : -1;
+        return USE_LOGGING && isLogAllowed ? Log.wtf(tag23 , message) : -1;
     }
 
     @MeDoc("this is suitable addition here - just wrapped log invocation to have control over it")
@@ -180,32 +181,32 @@ public final class L {
 
     public static int v(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.VERBOSE, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.VERBOSE , assembleResultString(objects)) : -1;
     }
 
     public static int d(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.DEBUG, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.DEBUG , assembleResultString(objects)) : -1;
     }
 
     public static int i(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.INFO, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.INFO , assembleResultString(objects)) : -1;
     }
 
     public static int w(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.WARN, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.WARN , assembleResultString(objects)) : -1;
     }
 
     public static int e(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.ERROR, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.ERROR , assembleResultString(objects)) : -1;
     }
 
     public static int a(@Nullable final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.ASSERT, assembleResultString(objects)) : -1;
+                passToStandardLogger(Log.ASSERT , assembleResultString(objects)) : -1;
     }
 
     // simplest and fastest - even without tag23 - may be used to measure speed of doing job \
@@ -216,20 +217,20 @@ public final class L {
     }
 
     @MeDoc("actually the main method - setting accordance between custom & standard logging levels")
-    private static int passToStandardLogger(final int logLevel, @NonNull final String logResult) {
+    private static int passToStandardLogger(final int logLevel , @NonNull final String logResult) {
         switch (logLevel) {
             case Log.VERBOSE:  // 2 \\
-                return Log.v(tag23, logResult);
+                return Log.v(tag23 , logResult);
             case Log.DEBUG:  // 3 \\
-                return Log.d(tag23, logResult);
+                return Log.d(tag23 , logResult);
             case Log.INFO:  // 4 \\
-                return Log.i(tag23, logResult);
+                return Log.i(tag23 , logResult);
             case Log.WARN:  // 5 \\
-                return Log.w(tag23, logResult);
+                return Log.w(tag23 , logResult);
             case Log.ERROR:  // 6 \\
-                return Log.e(tag23, logResult);
+                return Log.e(tag23 , logResult);
             case Log.ASSERT:  // 7 \\
-                return Log.wtf(tag23, logResult);
+                return Log.wtf(tag23 , logResult);
             default:
                 return -1;
         }
@@ -253,7 +254,7 @@ public final class L {
             // the starting string doesn't need the divider before it - so it's taken out of loop \\
             logResultBuilder.append(processOneObject(objects[0]));
             // this loop is expected to do at least one iteration & starts from the second string \\
-            for (int i = 1, argsLength = objects.length; i < argsLength; i++) {
+            for (int i = 1, argsLength = objects.length ; i < argsLength ; i++) {
                 // as we have already wrote initial string - here we should start with divider \\
                 logResultBuilder.append(divider).append(processOneObject(objects[i]));
             }
@@ -283,74 +284,74 @@ public final class L {
 
     public static int pV(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.VERBOSE, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.VERBOSE , tag23 , assembleResultString(objects)) : -1;
     }
 
     public static int pD(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.DEBUG, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.DEBUG , tag23 , assembleResultString(objects)) : -1;
     }
 
     public static int pI(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.INFO, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.INFO , tag23 , assembleResultString(objects)) : -1;
     }
 
     public static int pW(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.WARN, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.WARN , tag23 , assembleResultString(objects)) : -1;
     }
 
     public static int pE(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.ERROR, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.ERROR , tag23 , assembleResultString(objects)) : -1;
     }
 
     public static int pA(@NonNull final Object... objects) {
         return USE_LOGGING && isLogAllowed ?
-                Log.println(Log.ASSERT, tag23, assembleResultString(objects)) : -1;
+                Log.println(Log.ASSERT , tag23 , assembleResultString(objects)) : -1;
     }
 
     // ADDITIONAL API FOR SHOWING CURRENT VALUES ===================================================
 
-    public static int isV(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isV(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.VERBOSE, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.VERBOSE , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static int isD(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isD(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.DEBUG, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.DEBUG , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static int isI(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isI(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.INFO, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.INFO , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static int isW(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isW(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.WARN, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.WARN , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static int isE(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isE(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.ERROR, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.ERROR , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static int isA(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static int isA(@Nullable Object someInstance , @Nullable Object someValue) {
         return USE_LOGGING && isLogAllowed ?
-                passToStandardLogger(Log.ASSERT, createJointMessage(someInstance, someValue)) : -1;
+                passToStandardLogger(Log.ASSERT , createJointMessage(someInstance , someValue)) : -1;
     }
 
-    public static void isO(@Nullable Object someInstance, @Nullable Object someValue) {
+    public static void isO(@Nullable Object someInstance , @Nullable Object someValue) {
         if (USE_LOGGING && isLogAllowed) {
-            System.out.println(createJointMessage(someInstance, someValue));
+            System.out.println(createJointMessage(someInstance , someValue));
         }
     }
 
     @NonNull
-    private static String createJointMessage(@Nullable Object instanceToLog, @Nullable Object value) {
+    private static String createJointMessage(@Nullable Object instanceToLog , @Nullable Object value) {
         String result;
         if (instanceToLog == null) { // just protecting from NPE in that simple way \\
             result = stubForNullElement;
@@ -368,6 +369,6 @@ public final class L {
     }
 
     public static boolean isLoggable(int priority) {
-        return Log.isLoggable(tag23, priority);
+        return Log.isLoggable(tag23 , priority);
     }
 }

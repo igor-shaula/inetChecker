@@ -16,9 +16,9 @@ final class DelayedSingleTaskEngineTimer {
     private Timer jobTimer;
 
     //    @Override
-    void launchPollingEngineAfter(long delay, @NonNull final InetPollingLogic inetPollingLogic) {
+    void launchPollingEngineAfter(long delay , @NonNull final InetPollingLogic inetPollingLogic) {
         destroyPollingEngineNow();
-        jobTimer = new Timer("TimerToDeleteShortestCar", true);
+        jobTimer = new Timer("TimerToDeleteShortestCar" , true);
         final TimerTask ttRemove = new TimerTask() {
             @Override
             public void run() {
@@ -32,8 +32,8 @@ final class DelayedSingleTaskEngineTimer {
 //                }
             }
         };
-        jobTimer.schedule(ttRemove, delay);
-        L.d(CN, "runTimerToDeleteShortestCar ` jobTimer scheduled for " + delay);
+        jobTimer.schedule(ttRemove , delay);
+        L.d(CN , "runTimerToDeleteShortestCar ` jobTimer scheduled for " + delay);
     }
 
     //    @Override
@@ -43,11 +43,11 @@ final class DelayedSingleTaskEngineTimer {
 
     //    @Override
     void destroyPollingEngineNow() {
-        L.v(CN, "stopCurrentGeneration ` nothing to do here for handler");
+        L.v(CN , "stopCurrentGeneration ` nothing to do here for handler");
         if (jobTimer != null) {
             jobTimer.cancel();
             jobTimer = null;
-            L.d(CN, "stopTimerToDeleteShortestCar ` jobTimer cancelled and nulled");
+            L.d(CN , "stopTimerToDeleteShortestCar ` jobTimer cancelled and nulled");
         }
     }
 }

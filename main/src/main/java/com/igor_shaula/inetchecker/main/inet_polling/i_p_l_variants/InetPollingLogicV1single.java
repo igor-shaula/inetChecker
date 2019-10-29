@@ -43,12 +43,12 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         if (shouldLaunch) {
             // potentially we can have here many commands to launch many executors - but only one is enough \\
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
-                L.v(CN, "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
+                L.v(CN , "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
             } else {
                 isPollingAllowedInGeneral = true; // allowing future possible invocations \\
                 isWaitingForFirstResultFromPolling = true;
-                delayedSingleTaskEngine.appointNextGeneration(pollingRunnable, 0);
-                L.v(CN, "toggleInetCheckNow ` launched new generation of polling");
+                delayedSingleTaskEngine.appointNextGeneration(pollingRunnable , 0);
+                L.v(CN , "toggleInetCheckNow ` launched new generation of polling");
                 if (consumerLink != null) {
                     consumerLink.onTogglePollingState(true);
                 }
@@ -56,7 +56,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         } else {
             isPollingAllowedInGeneral = false; // preventing from future possible invocations \\
             delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow \\
-            L.v(CN, "toggleInetCheckNow ` stopped current generation of polling");
+            L.v(CN , "toggleInetCheckNow ` stopped current generation of polling");
             if (consumerLink != null) {
                 consumerLink.onTogglePollingState(false);
             }
@@ -67,7 +67,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
     @Override
     protected void askHost() {
         if (!isPollingAllowedInGeneral) {
-            L.w(CN, "askHost ` prevented from making requests & loosing battery");
+            L.w(CN , "askHost ` prevented from making requests & loosing battery");
             return;
         }
 
@@ -78,7 +78,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         okHttpClient.newCall(googleRequest).enqueue(new Callback() {
 
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            public void onFailure(@NonNull Call call , @NonNull IOException e) {
                 // immediately detecting timeout - even before logging \\
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onFailure in " + currentMillisNow);
@@ -105,7 +105,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) {
+            public void onResponse(@NonNull Call call , @NonNull Response response) {
                 // immediately detecting timeout - even before logging \\
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
@@ -153,7 +153,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         if (delayBeforeNextGeneration < 0) { // for the case of too long requests \\
             delayBeforeNextGeneration = 0;
         }
-        delayedSingleTaskEngine.appointNextGeneration(pollingRunnable, delayBeforeNextGeneration);
+        delayedSingleTaskEngine.appointNextGeneration(pollingRunnable , delayBeforeNextGeneration);
 //        L.v(CN, "askHost ` onResponse ` new oneGenerationExecutor scheduled in: " + delayBeforeNextGeneration);
     }
 }

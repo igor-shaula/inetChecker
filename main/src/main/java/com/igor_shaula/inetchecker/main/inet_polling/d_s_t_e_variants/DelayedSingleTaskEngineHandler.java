@@ -2,6 +2,7 @@ package com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -15,12 +16,12 @@ final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
     private Handler handler;
 
     @Override
-    public void appointNextGeneration(@NonNull Runnable task, long delay) {
+    public void appointNextGeneration(@NonNull Runnable task , long delay) {
         if (handler == null) {
             handler = new Handler(Looper.getMainLooper());
         }
 //        if (isNextCallGenerationAllowed) {
-        handler.postDelayed(task, delay);
+        handler.postDelayed(task , delay);
 //        }
     }
 
@@ -32,7 +33,7 @@ final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
     @Override
     public void stopCurrentGeneration() {
 //        isNextCallGenerationAllowed = false;
-        L.v(CN, "stopCurrentGeneration ` nothing to do here for handler");
+        L.v(CN , "stopCurrentGeneration ` nothing to do here for handler");
         handler = null;
     }
 }

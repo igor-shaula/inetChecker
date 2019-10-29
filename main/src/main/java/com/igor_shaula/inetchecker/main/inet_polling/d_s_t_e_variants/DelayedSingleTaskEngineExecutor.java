@@ -16,11 +16,11 @@ public final class DelayedSingleTaskEngineExecutor extends DelayedSingleTaskEngi
     @NonNull
     private ScheduledThreadPoolExecutor oneGenerationExecutor = new ScheduledThreadPoolExecutor(1);
     @Nullable
-    private ScheduledFuture<?> scheduledFuture;
+    private ScheduledFuture <?> scheduledFuture;
 
     @Override
-    public synchronized void appointNextGeneration(@NonNull Runnable task, long delay) {
-        scheduledFuture = oneGenerationExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+    public synchronized void appointNextGeneration(@NonNull Runnable task , long delay) {
+        scheduledFuture = oneGenerationExecutor.schedule(task , delay , TimeUnit.MILLISECONDS);
 //        L.v(CN, "scheduledFuture created with hashCode: " + scheduledFuture.hashCode());
     }
 

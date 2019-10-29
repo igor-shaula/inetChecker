@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Documented
 //@Inherited - commented to force separate documenting for every possible overridden method \
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ElementType.METHOD , ElementType.CONSTRUCTOR})
 
 public @interface MeDoc {
 
