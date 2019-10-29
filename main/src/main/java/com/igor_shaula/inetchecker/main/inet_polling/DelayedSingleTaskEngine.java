@@ -1,6 +1,6 @@
 package com.igor_shaula.inetchecker.main.inet_polling;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public abstract class DelayedSingleTaskEngine {
 

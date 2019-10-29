@@ -1,7 +1,7 @@
 package com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
 import com.igor_shaula.inetchecker.main.utils.L;

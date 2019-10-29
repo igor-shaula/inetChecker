@@ -1,6 +1,6 @@
 package com.igor_shaula.inetchecker.main.inet_polling.i_p_l_variants;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
 import com.igor_shaula.inetchecker.main.inet_polling.PollingResultsConsumer;
