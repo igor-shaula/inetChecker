@@ -1,4 +1,4 @@
-package com.igor_shaula.inet_checker.main.utils;
+package utils;
 
 import android.os.Build;
 import android.util.Log;
@@ -6,9 +6,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.igor_shaula.inet_checker.main.BuildConfig;
+import com.igor_shaula.inet_checker.BuildConfig;
 
-@SuppressWarnings({"WeakerAccess" , "unused" , "UnusedReturnValue"})
+@SuppressWarnings({"unused" , "UnusedReturnValue"})
 
 @TypeDoc(createdBy = "Igor Shaula", createdOn = "30-05-2018", purpose = "" +
         "the most minimalistic & useful wrapper for local logging," +

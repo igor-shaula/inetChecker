@@ -1,7 +1,6 @@
 package com.igor_shaula.inet_checker.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +13,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
 import com.igor_shaula.inet_checker.main.inet_polling.PollingResultsConsumer;
+
+import utils.L;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,17 +60,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTogglePollingState(boolean isPollingActive) {
-                Log.d(TAG , "onTogglePollingState: isPollingActive = " + isPollingActive);
+                L.d(TAG , "onTogglePollingState: isPollingActive = " + isPollingActive);
             }
 
             @Override
             public void onFirstResultReceived(boolean isInetAvailable) {
-                Log.d(TAG , "onFirstResultReceived: isInetAvailable = " + isInetAvailable);
+                L.d(TAG , "onFirstResultReceived: isInetAvailable = " + isInetAvailable);
             }
 
             @Override
             public void onInetStateChanged(boolean isAvailable) {
-                Log.d(TAG , "onInetStateChanged: isAvailable = " + isAvailable);
+                L.d(TAG , "onInetStateChanged: isAvailable = " + isAvailable);
             }
         };
         final InetPollingLogic inetPollingLogic = InetPollingLogic.getInstance(pollingResultsConsumer);

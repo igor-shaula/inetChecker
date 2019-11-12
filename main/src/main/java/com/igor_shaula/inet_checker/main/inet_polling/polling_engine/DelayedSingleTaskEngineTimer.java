@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
-import com.igor_shaula.inet_checker.main.utils.L;
+import utils.L;
 
 import java.util.Timer;
 import java.util.TimerTask;

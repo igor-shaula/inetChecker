@@ -1,4 +1,4 @@
-package com.igor_shaula.inet_checker.main.utils;
+package utils;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

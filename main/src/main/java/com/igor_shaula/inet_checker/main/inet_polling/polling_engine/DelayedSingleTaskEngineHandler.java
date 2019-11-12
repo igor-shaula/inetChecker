@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor_shaula.inet_checker.main.inet_polling.DelayedSingleTaskEngine;
-import com.igor_shaula.inet_checker.main.utils.L;
+import utils.L;
 
 final class DelayedSingleTaskEngineHandler extends DelayedSingleTaskEngine {
 

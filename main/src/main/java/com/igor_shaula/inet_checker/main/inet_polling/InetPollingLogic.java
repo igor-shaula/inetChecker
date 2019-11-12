@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor_shaula.inet_checker.main.inet_polling.polling_logic.InetPollingLogicV1single;
-import com.igor_shaula.inet_checker.main.utils.L;
+import utils.L;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
