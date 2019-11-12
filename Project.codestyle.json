@@ -927,7 +927,7 @@
       "align_group_field_declarations": false
     },
     "xml": {
-      "arrangement_settings_migrated_to_191": false,
+      "arrangement_settings_migrated_to_191": true,
       "block_comment_at_first_column": true,
       "continuation_indent_size": 4,
       "indent_size": 4,
