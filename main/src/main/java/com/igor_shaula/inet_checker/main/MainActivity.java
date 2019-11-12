@@ -1,4 +1,4 @@
-package com.igor_shaula.inetchecker.main;
+package com.igor_shaula.inet_checker.main;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
-import com.igor_shaula.inetchecker.main.inet_polling.PollingResultsConsumer;
+import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_checker.main.inet_polling.PollingResultsConsumer;
 
 public class MainActivity extends AppCompatActivity {
 

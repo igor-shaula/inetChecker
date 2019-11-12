@@ -1,4 +1,4 @@
-package com.igor_shaula.inetchecker.main;
+package com.igor_shaula.inet_checker.main;
 
 import android.content.Context;
 

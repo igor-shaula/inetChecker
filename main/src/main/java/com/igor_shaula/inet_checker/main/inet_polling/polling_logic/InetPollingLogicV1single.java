@@ -1,11 +1,11 @@
-package com.igor_shaula.inetchecker.main.inet_polling.i_p_l_variants;
+package com.igor_shaula.inet_checker.main.inet_polling.polling_logic;
 
 import androidx.annotation.NonNull;
 
-import com.igor_shaula.inetchecker.main.inet_polling.InetPollingLogic;
-import com.igor_shaula.inetchecker.main.inet_polling.PollingResultsConsumer;
-import com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants.DelayedSingleTaskEngineExecutor;
-import com.igor_shaula.inetchecker.main.utils.L;
+import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_checker.main.inet_polling.PollingResultsConsumer;
+import com.igor_shaula.inet_checker.main.inet_polling.polling_engine.DelayedSingleTaskEngineExecutor;
+import com.igor_shaula.inet_checker.main.utils.L;
 
 import java.io.IOException;
 

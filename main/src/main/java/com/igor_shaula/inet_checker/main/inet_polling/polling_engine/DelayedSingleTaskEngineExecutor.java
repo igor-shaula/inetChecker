@@ -1,9 +1,9 @@
-package com.igor_shaula.inetchecker.main.inet_polling.d_s_t_e_variants;
+package com.igor_shaula.inet_checker.main.inet_polling.polling_engine;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.igor_shaula.inetchecker.main.inet_polling.DelayedSingleTaskEngine;
+import com.igor_shaula.inet_checker.main.inet_polling.DelayedSingleTaskEngine;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;

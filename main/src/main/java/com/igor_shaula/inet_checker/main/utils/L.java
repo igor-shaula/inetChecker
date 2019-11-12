@@ -1,4 +1,4 @@
-package com.igor_shaula.inetchecker.main.utils;
+package com.igor_shaula.inet_checker.main.utils;
 
 import android.os.Build;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.igor_shaula.inetchecker.main.BuildConfig;
+import com.igor_shaula.inet_checker.main.BuildConfig;
 
 @SuppressWarnings({"WeakerAccess" , "unused" , "UnusedReturnValue"})
 

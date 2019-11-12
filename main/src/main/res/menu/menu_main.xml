@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.igor_shaula.inetchecker.main.MainActivity">
+      tools:context="com.igor_shaula.inet_checker.main.MainActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
