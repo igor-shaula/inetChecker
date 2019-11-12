@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
-import com.igor_shaula.inet_checker.main.inet_polling.PollingResultsConsumer;
+import com.igor_shaula.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.PollingResultsConsumer;
 
 import utils.L;
 

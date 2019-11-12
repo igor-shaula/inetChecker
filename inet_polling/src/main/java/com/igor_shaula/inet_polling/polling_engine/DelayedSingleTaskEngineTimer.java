@@ -1,9 +1,9 @@
-package com.igor_shaula.inet_checker.main.inet_polling.polling_engine;
+package com.igor_shaula.inet_polling.polling_engine;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.igor_shaula.inet_checker.main.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.InetPollingLogic;
 import utils.L;
 
 import java.util.Timer;

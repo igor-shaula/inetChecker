@@ -1,4 +1,4 @@
-package com.igor_shaula.inet_checker.main.inet_polling;
+package com.igor_shaula.inet_polling;
 
 import androidx.annotation.NonNull;
 

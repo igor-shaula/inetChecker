@@ -1,9 +1,9 @@
-package com.igor_shaula.inet_checker.main.inet_polling;
+package com.igor_shaula.inet_polling;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.igor_shaula.inet_checker.main.inet_polling.polling_logic.InetPollingLogicV1single;
+import com.igor_shaula.inet_polling.polling_logic.InetPollingLogicV1single;
 import utils.L;
 
 import okhttp3.OkHttpClient;
