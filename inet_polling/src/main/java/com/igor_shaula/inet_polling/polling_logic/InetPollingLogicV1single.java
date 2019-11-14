@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.igor_shaula.inet_polling.InetPollingLogic;
 import com.igor_shaula.inet_polling.PollingResultsConsumer;
 import com.igor_shaula.inet_polling.polling_engine.DelayedSingleTaskEngineExecutor;
-import utils.L;
 
 import java.io.IOException;
 
@@ -13,6 +12,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import utils.L;
 
 public final class InetPollingLogicV1single extends InetPollingLogic {
 
@@ -25,17 +25,15 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 //        delayedSingleTaskEngine = new DelayedSingleTaskEngineHandler();
         delayedSingleTaskEngine = new DelayedSingleTaskEngineExecutor();
 //        delayedSingleTaskEngine = new DelayedSingleTaskEngineTimer();
-
-//        okHttpClient.setConnectTimeout(POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
-//        okHttpClient.setReadTimeout(POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
-//        okHttpClient.setWriteTimeout(POLLING_TIMEOUT, TimeUnit.MILLISECONDS);
+        // TODO: 14.11.2019 carry selection of exact polling engine out of this class
     }
 
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    public boolean isPollingActive() {
+    public boolean isPollingActive() { // main getter of polling agent state
         return delayedSingleTaskEngine.isCurrentGenerationAlive();
+        // that's because consumer of this class must not know about its inner specifics
     }
 
     @Override
@@ -44,16 +42,20 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
             // potentially we can have here many commands to launch many executors - but only one is enough \\
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
                 L.v(CN , "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
+                // just do nothing for now as we already have polling engine in work
             } else {
+                // launch new sequence of polling actions
                 isPollingAllowedInGeneral = true; // allowing future possible invocations \\
                 isWaitingForFirstResultFromPolling = true;
                 delayedSingleTaskEngine.appointNextGeneration(pollingRunnable , 0);
+                // selection of timeout before polling start could be carried out to options
                 L.v(CN , "toggleInetCheckNow ` launched new generation of polling");
                 if (consumerLink != null) {
                     consumerLink.onTogglePollingState(true);
+                    // TODO: 14.11.2019 this is not the right place for sending this callback
                 }
             }
-        } else {
+        } else { // launch is prohibited - so in any state of engine we must stop it here
             isPollingAllowedInGeneral = false; // preventing from future possible invocations \\
             delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow \\
             L.v(CN , "toggleInetCheckNow ` stopped current generation of polling");
