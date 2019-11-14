@@ -1,1 +1,1 @@
-include ':main', ':app', ':base', ':inet_polling'
+include ':app', ':base', ':inet_polling'
