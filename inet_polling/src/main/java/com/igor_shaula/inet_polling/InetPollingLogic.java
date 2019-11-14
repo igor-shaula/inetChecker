@@ -29,17 +29,6 @@ public abstract class InetPollingLogic {
     // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling
 
     @NonNull
-    public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
-        if (thisInstance == null) {
-            thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
-        } else {
-            thisInstance.consumerLink = pollingResultsConsumer;
-            L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
-        }
-        return thisInstance;
-    }
-
-    @NonNull
     protected final Runnable pollingRunnable = new Runnable() {
         // main holder of payload to be done right after the new generation is started
         @Override
@@ -56,7 +45,7 @@ public abstract class InetPollingLogic {
     };
 
     @NonNull
-    protected DelayedSingleTaskEngine delayedSingleTaskEngine = new DelayedSingleTaskEngineExecutor();
+    protected final DelayedSingleTaskEngine delayedSingleTaskEngine = new DelayedSingleTaskEngineExecutor();
 
     @NonNull
     protected final OkHttpClient okHttpClient = new OkHttpClient();
@@ -69,10 +58,16 @@ public abstract class InetPollingLogic {
 
     // ALL METHODS ---------------------------------------------------------------------------------
 
-    // switch on or off - the only useful handling needed from outside
-    public abstract void toggleInetCheck(boolean shouldLaunch);
-
-    protected abstract void askHost();
+    @NonNull
+    public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
+        if (thisInstance == null) {
+            // selection of concrete logic agent and polling engine have to be on the same level
+            thisInstance = new InetPollingLogicV1single();
+        }
+        thisInstance.consumerLink = pollingResultsConsumer;
+        L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
+        return thisInstance;
+    }
 
     public boolean isPollingActive() { // main getter of polling agent state
         return delayedSingleTaskEngine.isCurrentGenerationAlive();
@@ -90,7 +85,13 @@ public abstract class InetPollingLogic {
         }
     }
 
-    public void clearCurrentConsumerLink() {
+    public void clearCurrentPollingSetting() {
         consumerLink = null;
+        thisInstance = null;
     }
+
+    // switch on or off - the only useful handling needed from outside
+    public abstract void toggleInetCheck(boolean shouldLaunch);
+
+    protected abstract void askHost();
 }

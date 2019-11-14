@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.igor_shaula.inet_polling.InetPollingLogic;
 import com.igor_shaula.inet_polling.PollingOptions;
-import com.igor_shaula.inet_polling.PollingResultsConsumer;
 
 import java.io.IOException;
 
@@ -18,8 +17,8 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 
     private static final String CN = "InetPollingLogicV1single";
 
-    public InetPollingLogicV1single(@NonNull PollingResultsConsumer consumerLink) {
-        this.consumerLink = consumerLink;
+    public InetPollingLogicV1single() {
+        L.i(CN , "used");
     }
 
     // ---------------------------------------------------------------------------------------------
