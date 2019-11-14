@@ -15,16 +15,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st realization \\
+public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st realization
 
     private static final String CN = "InetPollingLogicV0rejected";
 
     private static final String HOST_GOOGLE = "https://www.google.com/";
-    private static final String HOST_APPLE = "http://captive.apple.com/"; // HANGS THE APP IF HTTPS \\
-    //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG\\
-    private static final long POLLING_DELAY = 1000; // millis \\
-    //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG \\
-    private static final long POLLING_TIMEOUT = 3000; // millis \\
+    private static final String HOST_APPLE = "http://captive.apple.com/"; // HANGS THE APP IF HTTPS
+    //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG
+    private static final long POLLING_DELAY = 1000; // millis
+    //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG
+    private static final long POLLING_TIMEOUT = 3000; // millis
 
     @NonNull
     private final boolean[] inetAccessibleInChannel = new boolean[3];
@@ -54,7 +54,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
     @NonNull
     private final Request requestBank = new Request.Builder()
             .addHeader("Accept", "application/json")
-//            .addHeader(C.Api.HEADER_USER_AGENT, U.generateUserAgent()) // was inside interceptor \\
+//            .addHeader(C.Api.HEADER_USER_AGENT, U.generateUserAgent()) // was inside interceptor
             .get()
             .build();
     @NonNull
@@ -63,9 +63,9 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
         public void run() {
             if (consumerLink.isConnectivityReadySyncCheck()) {
 //                L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
-                askHost(0); // Google \\
-                askHost(1); // Apple \\
-                askHost(2); // Amazon \\
+                askHost(0); // Google
+                askHost(1); // Apple
+                askHost(2); // Amazon
             } else {
                 inetAccessibleInChannel[0] = false;
                 inetAccessibleInChannel[1] = false;
@@ -77,7 +77,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
     private long timeDeltaFromStartedFailures;
 
     public InetPollingLogicV0rejected(@NonNull PollingResultsConsumer consumerLink) {
-        L.v(CN); // detection of used variant \\
+        L.v(CN); // detection of used variant
         this.consumerLink = consumerLink;
 
 //        delayedSingleTaskEngine = new DelayedSingleTaskEngineTimer();
@@ -98,15 +98,15 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
 
     public void toggleInetCheckNow(boolean shouldLaunch) {
         if (shouldLaunch) {
-            // potentially we can have here many commands to launch many executors - but only one is enough \\
+            // potentially we can have here many commands to launch many executors - but only one is enough
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
                 L.v(CN, "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
             } else {
-//                timeDeltaFromStartedFailures = 0; // resetting for future possible attempts with onFailure \\
+//                timeDeltaFromStartedFailures = 0; // resetting for future possible attempts with onFailure
                 delayedSingleTaskEngine.appointNextGeneration(askAllHostsRunnable, 0);
             }
         } else {
-            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow \\
+            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow
         }
     }
 
@@ -134,25 +134,25 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
         }
         oneGenerationFlags.put(whichOne, true);
 
-        // this link is created to be reused in closing response body later \\
+        // this link is created to be reused in closing response body later
         final ResponseBody[] responseBody = new ResponseBody[1];
         // A connection to https://www.google.com/ was leaked. Did you forget to close a response body?
 
         okHttpClient.newCall(request).enqueue(new Callback() {
 
-            // previous realization for onFailure - this case resulted in sudden stop from Android OS \\
+            // previous realization for onFailure - this case resulted in sudden stop from Android OS
             @Override
             public void onFailure(Request request, IOException e) {
                 if (e != null) {
                     L.v(CN, "askHost ` onFailure ` getLocalizedMessage = " + e.getLocalizedMessage());
                 }
-                delayedSingleTaskEngine.stopCurrentGeneration(); // onFailure \\
+                delayedSingleTaskEngine.stopCurrentGeneration(); // onFailure
 
                 if (timeDeltaFromStartedFailures > POLLING_TIMEOUT) {
                     consumerLink.onInetStateChanged(false);
                 }
 
-                // immediately detecting timeout - even before logging \\
+                // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onFailure in " + currentMillisNow);
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTimes.get(whichOne);
@@ -162,7 +162,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
 
                 if (isResponseReceivedInTime) {
                     long delayBeforeNextGeneration = POLLING_DELAY - timeForThisRequest;
-                    if (delayBeforeNextGeneration < 0) { // for the case of too long requests \\
+                    if (delayBeforeNextGeneration < 0) { // for the case of too long requests
                         delayBeforeNextGeneration = 0;
                     }
                     timeDeltaFromStartedFailures = timeDeltaFromStartedFailures + timeForThisRequest;
@@ -175,7 +175,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
 
             @Override
             public synchronized void onResponse(Response response) {
-                // immediately detecting timeout - even before logging \\
+                // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTimes.get(whichOne);
@@ -184,7 +184,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
 //                L.v(CN, "askHost ` onResponse ` isResponseReceivedInTime = " + isResponseReceivedInTime);
                 onRequestStateChanged(whichOne, isResponseReceivedInTime);
 
-                if (isResponseReceivedInTime && oneGenerationFlags.get(whichOne)) { // one time latch for a generation \\
+                if (isResponseReceivedInTime && oneGenerationFlags.get(whichOne)) { // one time latch for a generation
 
                     appointNextGenerationConsideringThisDelay(timeForThisRequest);
 //                    L.v(CN, "askHost ` onResponse ` new oneGenerationExecutor scheduled in: " + delayBeforeNextGeneration);
@@ -194,7 +194,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
                 }
                 try {
                     responseBody[0] = response.body();
-                    responseBody[0].close(); // not needed if response's body-method hasn't been called \\
+                    responseBody[0].close(); // not needed if response's body-method hasn't been called
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -207,7 +207,7 @@ public final class InetPollingLogicV0rejected extends InetPollingLogic { // 1st 
     private void appointNextGenerationConsideringThisDelay(long timeForThisRequest) {
         delayedSingleTaskEngine.stopCurrentGeneration();
         long delayBeforeNextGeneration = POLLING_DELAY - timeForThisRequest;
-        if (delayBeforeNextGeneration < 0) { // for the case of too long requests \\
+        if (delayBeforeNextGeneration < 0) { // for the case of too long requests
             delayBeforeNextGeneration = 0;
         }
         delayedSingleTaskEngine.appointNextGeneration(askAllHostsRunnable, delayBeforeNextGeneration);

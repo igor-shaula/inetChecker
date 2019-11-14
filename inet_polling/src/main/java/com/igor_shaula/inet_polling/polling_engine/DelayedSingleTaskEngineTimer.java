@@ -24,9 +24,9 @@ final class DelayedSingleTaskEngineTimer {
             public void run() {
 //                if (inetPollingLogic.isConnectivityReadySyncCheck()) {
 //                    L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
-//                    inetPollingLogic.askHost(0); // Google \\
-//                    inetPollingLogic.askHost(1); // Apple \\
-//                    inetPollingLogic.askHost(2); // Amazon \\
+//                    inetPollingLogic.askHost(0); // Google
+//                    inetPollingLogic.askHost(1); // Apple
+//                    inetPollingLogic.askHost(2); // Amazon
 //                } else {
 //                    inetPollingLogic.onInetStateChanged(false);
 //                }

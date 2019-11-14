@@ -20,33 +20,33 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
     private static final String CN = "InetPollingLogicV2experimental";
 
     private static final String HOST_GOOGLE = "https://www.google.com/";
-    private static final String HOST_APPLE = "http://captive.apple.com/"; // HANGS THE APP IF HTTPS \\
-    //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG\\
-    private static final long POLLING_DELAY = 1000; // millis \\
-    //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG \\
-    private static final long POLLING_TIMEOUT = 3000; // millis \\
+    private static final String HOST_APPLE = "http://captive.apple.com/"; // HANGS THE APP IF HTTPS
+    //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG
+    private static final long POLLING_DELAY = 1000; // millis
+    //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG
+    private static final long POLLING_TIMEOUT = 3000; // millis
 
     private boolean isPollingAllowed;
     @NonNull
-    // result information per channel \\
+    // result information per channel
     private final boolean[] inetAccessibleInChannel = new boolean[3];
     @NonNull
-    // timestamp of making currently active requests generation - individual for every channel \\
+    // timestamp of making currently active requests generation - individual for every channel
     private final SparseLongArray oneGenerationAbsTimes = new SparseLongArray(3);
     //    @NonNull
-    // latch for consider & schedule new generation for the first successful response only \\
+    // latch for consider & schedule new generation for the first successful response only
 //    private final SparseBooleanArray oneGenerationResponseFlags = new SparseBooleanArray(3);
 //    @NonNull
-    // latch for consider & schedule new generation for the first happened failed request only \\
+    // latch for consider & schedule new generation for the first happened failed request only
 //    private final SparseBooleanArray oneGenerationFailureFlags = new SparseBooleanArray(3);
     @NonNull
     private final SparseBooleanArray oneGenerationReactionFlags = new SparseBooleanArray(3);
     @NonNull
-    // link to invoking class back - to change main flag & check connectivity which requires Context \\
+    // link to invoking class back - to change main flag & check connectivity which requires Context
     private final PollingResultsConsumer consumerLink;
     //    private final ConsumerLink consumerLink;
     @NonNull
-    // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling \\
+    // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling
     private final DelayedSingleTaskEngine delayedSingleTaskEngine;
     @NonNull
     private final OkHttpClient okHttpClient = new OkHttpClient();
@@ -54,7 +54,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
     private final Request requestGoogle = new Request.Builder()
 //            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(HOST_GOOGLE)
-            .head() // for reducing of package size in response \\
+            .head() // for reducing of package size in response
             .build();
     @NonNull
     private final Request requestApple = new Request.Builder()
@@ -68,7 +68,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
             .get()
             .build();
     @NonNull
-    // main holder of payload to be done right after the new generation is started \\
+    // main holder of payload to be done right after the new generation is started
     private final Runnable askAllHostsRunnable = new Runnable() {
         @Override
         public void run() {
@@ -77,22 +77,22 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
             }
             if (consumerLink.isConnectivityReadySyncCheck()) {
 //                L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
-                askHost(0); // Google \\
-                askHost(1); // Apple \\
-                askHost(2); // Amazon \\
+                askHost(0); // Google
+                askHost(1); // Apple
+                askHost(2); // Amazon
             } else {
-                // updating initial info in every channel for future - because we don't start polling now \\
+                // updating initial info in every channel for future - because we don't start polling now
                 inetAccessibleInChannel[0] = false;
                 inetAccessibleInChannel[1] = false;
                 inetAccessibleInChannel[2] = false;
-                // updating main flag for this case of connectivity absence \\
+                // updating main flag for this case of connectivity absence
                 consumerLink.onInetStateChanged(false);
             }
         }
     };
 
     public InetPollingLogicV2experimental(@NonNull PollingResultsConsumer consumerLink) {
-        L.v(CN); // detection of used variant \\
+        L.v(CN); // detection of used variant
         this.consumerLink = consumerLink;
 
 //        delayedSingleTaskEngine = new DelayedSingleTaskEngineHandler();
@@ -111,10 +111,10 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         return delayedSingleTaskEngine.isCurrentGenerationAlive();
     }
 
-    public void toggleInetCheckNow(boolean shouldLaunch) { // main switcher \\
+    public void toggleInetCheckNow(boolean shouldLaunch) { // main switcher
         isPollingAllowed = shouldLaunch;
         if (shouldLaunch) {
-            // potentially we can have here many commands to launch many executors - but only one is enough \\
+            // potentially we can have here many commands to launch many executors - but only one is enough
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
                 L.v(CN, "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
             } else {
@@ -122,7 +122,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
                 L.v(CN, "toggleInetCheckNow ` launched new generation of polling");
             }
         } else {
-            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow \\
+            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow
             L.v(CN, "toggleInetCheckNow ` stopped current generation of polling");
         }
     }
@@ -154,7 +154,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
 //        oneGenerationFailureFlags.put(whichOne, true);
         oneGenerationReactionFlags.put(whichOne, true);
 
-        // this link is created to be reused in closing response body later \\
+        // this link is created to be reused in closing response body later
         final ResponseBody[] responseBody = new ResponseBody[1];
         // A connection to https://www.google.com/ was leaked. Did you forget to close a response body?
 
@@ -162,7 +162,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
 
             @Override
             public synchronized void onFailure(Request request, IOException e) {
-                // immediately detecting timeout - even before logging \\
+                // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onFailure in " + currentMillisNow);
 //                if (e != null) {
@@ -174,7 +174,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
                 appointNextGenerationFromTheFirstReactionConsideringDelay(timeForThisRequest, whichOne);
 //                if (oneGenerationFailureFlags.get(whichOne)) {
 //                    appointNextGenerationConsideringThisDelay(timeForThisRequest);
-//                    // preventing from launching the same job from other two later failures \\
+//                    // preventing from launching the same job from other two later failures
 //                    oneGenerationFailureFlags.clear();
 //                }
 
@@ -183,13 +183,13 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
 //                final boolean isResponseReceivedInTime = timeForThisRequest <= POLLING_TIMEOUT;
 //                L.v(CN, "askHost ` onFailure ` isResponseReceivedInTime = " + isResponseReceivedInTime);
 //
-//                // if response failed in after timeout - we'll collect false for it - real offline \\
+//                // if response failed in after timeout - we'll collect false for it - real offline
 //                onRequestStateChanged(whichOne, isResponseReceivedInTime);
             }
 
             @Override
             public synchronized void onResponse(Response response) {
-                // immediately detecting timeout - even before logging \\
+                // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTimes.get(whichOne);
@@ -201,7 +201,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
                 appointNextGenerationFromTheFirstReactionConsideringDelay(timeForThisRequest, whichOne);
                 try {
                     responseBody[0] = response.body();
-                    responseBody[0].close(); // not needed if response's body-method hasn't been called \\
+                    responseBody[0].close(); // not needed if response's body-method hasn't been called
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -209,23 +209,23 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         });
 //        L.v(CN, "askHost ` request was maid: " + request);
         oneGenerationAbsTimes.put(whichOne, System.currentTimeMillis());
-        // updating time of making the request in the current channel \\
+        // updating time of making the request in the current channel
     }
 
     private void appointNextGenerationFromTheFirstReactionConsideringDelay(long timeForThisRequest,
                                                                            int whichOne) {
-        if (timeForThisRequest < POLLING_TIMEOUT && oneGenerationReactionFlags.get(whichOne)) { // one time latch for a generation \\
+        if (timeForThisRequest < POLLING_TIMEOUT && oneGenerationReactionFlags.get(whichOne)) { // one time latch for a generation
             appointNextGenerationConsideringThisDelay(timeForThisRequest);
-            // preventing from launching the same job from other two later responses \\
+            // preventing from launching the same job from other two later responses
             oneGenerationReactionFlags.clear();
         }
-        // next block of actions serves only for avoiding internal OkHTTP warnings \\
+        // next block of actions serves only for avoiding internal OkHTTP warnings
     }
 
     private void appointNextGenerationConsideringThisDelay(long timeForThisRequest) {
         delayedSingleTaskEngine.stopCurrentGeneration();
         long delayBeforeNextGeneration = POLLING_DELAY - timeForThisRequest;
-        if (delayBeforeNextGeneration < 0) { // for the case of too long requests \\
+        if (delayBeforeNextGeneration < 0) { // for the case of too long requests
             delayBeforeNextGeneration = 0;
         }
         delayedSingleTaskEngine.appointNextGeneration(askAllHostsRunnable, delayBeforeNextGeneration);
@@ -234,11 +234,11 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
 
     private void onRequestStateChanged(int whichOne, boolean isInetAvailable) {
         inetAccessibleInChannel[whichOne] = isInetAvailable;
-        // the main check of request's result in every channel \\
+        // the main check of request's result in every channel
         if (inetAccessibleInChannel[0] || inetAccessibleInChannel[1] || inetAccessibleInChannel[2]) {
             consumerLink.onInetStateChanged(true);
         } else {
-            consumerLink.onInetStateChanged(false); // all channels fail here \\
+            consumerLink.onInetStateChanged(false); // all channels fail here
         }
     }
 }*/

@@ -33,7 +33,7 @@ public final class DelayedSingleTaskEngineExecutor extends DelayedSingleTaskEngi
 
     @Override
     public synchronized void stopCurrentGeneration() {
-        // used try-catch block because for some reason if (scheduledFuture != null) caused NPE inside \\
+        // used try-catch block because for some reason if (scheduledFuture != null) caused NPE inside
         try {
             //noinspection ConstantConditions
             scheduledFuture.cancel(true);

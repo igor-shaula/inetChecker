@@ -24,18 +24,18 @@ public final class L {
     private static final String CONNECTOR_SHORTENED_TO_10_SYMBOLS =
             "given connector was shortened to first 10 symbols to keep separation reasonable";
 
-    // global constant switcher to be touched from this class only \\
+    // global constant switcher to be touched from this class only
     private static final boolean USE_LOGGING = BuildConfig.DEBUG;
 
-    // dynamic local switcher - can be helpful to toggle logging from other classes \\
+    // dynamic local switcher - can be helpful to toggle logging from other classes
     private static boolean isLogAllowed = true;
 
     @NonNull
     private static String tag23 = "L";
     @NonNull
-    private static String divider = " ` "; // should be restricted in length somehow to keep it usable \\
+    private static String divider = " ` "; // should be restricted in length somehow to keep it usable
     @NonNull
-    private static String connector = " = "; // should be restricted in length somehow to keep it usable \\
+    private static String connector = " = "; // should be restricted in length somehow to keep it usable
     @NonNull
     private static String stubForNullContainer = "{LogVarArgs:NULL}";
     @NonNull
@@ -46,7 +46,7 @@ public final class L {
     private static String stubForEmptyElement = "{empty}";
 
     private L() {
-        // should not create any instances of this class \\
+        // should not create any instances of this class
     }
 
     // CONFIGURATION ===============================================================================
@@ -66,14 +66,14 @@ public final class L {
 
     public static void setTag23(@NonNull String tag23) {
         /*
-        the following is taken from developers.android.com -> Log-related documentation \\
+        the following is taken from developers.android.com -> Log-related documentation
         IllegalArgumentException is thrown if the tag.length() > 23 for Nougat (7.0) releases (API <= 23) and prior,
         there is no tag limit of concern after this API level.
         */
         if (Build.VERSION.SDK_INT <= 23) {
-            // to avoid IllegalArgumentException i decided to take only first 23 of given characters \\
+            // to avoid IllegalArgumentException i decided to take only first 23 of given characters
             L.tag23 = tag23.substring(0 , 22);
-            // i think in this case user should be notified about such a change \\
+            // i think in this case user should be notified about such a change
             Log.i(L.tag23 , TAG_SHORTENED_TO_23_SYMBOLS);
         } else {
             L.tag23 = tag23;
@@ -86,7 +86,7 @@ public final class L {
     }
 
     public static void setDivider(@NonNull String divider) {
-        // i decided to restrict divider's length to reasonable limit (to avoid too long inner separators) \\
+        // i decided to restrict divider's length to reasonable limit (to avoid too long inner separators)
         if (divider.length() > 10) {
             L.divider = divider.substring(0 , 9);
             Log.i(tag23 , DIVIDER_SHORTENED_TO_10_SYMBOLS);
@@ -100,7 +100,7 @@ public final class L {
     }
 
     public static void setConnector(@NonNull String connector) {
-        // i decided to restrict connector's length to reasonable limit (to avoid too long inner connectors) \\
+        // i decided to restrict connector's length to reasonable limit (to avoid too long inner connectors)
         if (connector.length() > 10) {
             L.connector = connector.substring(0 , 9);
             Log.i(tag23 , CONNECTOR_SHORTENED_TO_10_SYMBOLS);
@@ -114,7 +114,7 @@ public final class L {
     }
 
     public static void setStubForNullContainer(@NonNull String stubForNullContainer) {
-        L.stubForNullContainer = stubForNullContainer; // currently unprotected concerning length \\
+        L.stubForNullContainer = stubForNullContainer; // currently unprotected concerning length
     }
 
     @NonNull
@@ -123,7 +123,7 @@ public final class L {
     }
 
     public static void setStubForEmptyContainer(@NonNull String stubForEmptyContainer) {
-        L.stubForEmptyContainer = stubForEmptyContainer; // currently unprotected concerning length \\
+        L.stubForEmptyContainer = stubForEmptyContainer; // currently unprotected concerning length
     }
 
     @NonNull
@@ -132,7 +132,7 @@ public final class L {
     }
 
     public static void setStubForNullElement(@NonNull String stubForNullElement) {
-        L.stubForNullElement = stubForNullElement; // currently unprotected concerning length \\
+        L.stubForNullElement = stubForNullElement; // currently unprotected concerning length
     }
 
     @NonNull
@@ -141,7 +141,7 @@ public final class L {
     }
 
     public static void setStubForEmptyElement(@NonNull String stubForEmptyElement) {
-        L.stubForEmptyElement = stubForEmptyElement; // currently unprotected concerning length \\
+        L.stubForEmptyElement = stubForEmptyElement; // currently unprotected concerning length
     }
 
     // FASTEST & SIMPLEST ONE_ARGUMENT API =========================================================
@@ -171,7 +171,7 @@ public final class L {
     }
 
     @MeDoc("this is suitable addition here - just wrapped log invocation to have control over it")
-    public static void o(@Nullable final Object object) { // s - because it is the simplest here \\
+    public static void o(@Nullable final Object object) { // s - because it is the simplest here
         if (USE_LOGGING && isLogAllowed) {
             System.out.println(object);
         }
@@ -219,17 +219,17 @@ public final class L {
     @MeDoc("actually the main method - setting accordance between custom & standard logging levels")
     private static int passToStandardLogger(final int logLevel , @NonNull final String logResult) {
         switch (logLevel) {
-            case Log.VERBOSE:  // 2 \\
+            case Log.VERBOSE:  // 2
                 return Log.v(tag23 , logResult);
-            case Log.DEBUG:  // 3 \\
+            case Log.DEBUG:  // 3
                 return Log.d(tag23 , logResult);
-            case Log.INFO:  // 4 \\
+            case Log.INFO:  // 4
                 return Log.i(tag23 , logResult);
-            case Log.WARN:  // 5 \\
+            case Log.WARN:  // 5
                 return Log.w(tag23 , logResult);
-            case Log.ERROR:  // 6 \\
+            case Log.ERROR:  // 6
                 return Log.e(tag23 , logResult);
-            case Log.ASSERT:  // 7 \\
+            case Log.ASSERT:  // 7
                 return Log.wtf(tag23 , logResult);
             default:
                 return -1;
@@ -240,22 +240,22 @@ public final class L {
 
     @NonNull
     private static String assembleResultString(@Nullable final Object... objects) {
-        final String logResult; // logResult = VarArgsResult \\
+        final String logResult; // logResult = VarArgsResult
         if (objects == null) {
             logResult = stubForNullContainer;
         } else if (objects.length == 0) {
             logResult = stubForEmptyContainer;
-        } else if (objects.length == 1) { // saving time by avoiding StringBuilder creation \\
+        } else if (objects.length == 1) { // saving time by avoiding StringBuilder creation
             logResult = processOneObject(objects[0]);
-        } else { // as [objects.length cannot be < 0] -> in this case [objects.length >= 2] \\
+        } else { // as [objects.length cannot be < 0] -> in this case [objects.length >= 2]
             final int minimumCapacity = getStringLength(objects[0]) + divider.length() + getStringLength(objects[1]);
-            // as minimum number of args here is 2 -> we're preparing StringBuilder just for it \\
+            // as minimum number of args here is 2 -> we're preparing StringBuilder just for it
             final StringBuilder logResultBuilder = new StringBuilder(minimumCapacity);
-            // the starting string doesn't need the divider before it - so it's taken out of loop \\
+            // the starting string doesn't need the divider before it - so it's taken out of loop
             logResultBuilder.append(processOneObject(objects[0]));
-            // this loop is expected to do at least one iteration & starts from the second string \\
+            // this loop is expected to do at least one iteration & starts from the second string
             for (int i = 1, argsLength = objects.length ; i < argsLength ; i++) {
-                // as we have already wrote initial string - here we should start with divider \\
+                // as we have already wrote initial string - here we should start with divider
                 logResultBuilder.append(divider).append(processOneObject(objects[i]));
             }
             logResult = logResultBuilder.toString();
@@ -353,12 +353,12 @@ public final class L {
     @NonNull
     private static String createJointMessage(@Nullable Object instanceToLog , @Nullable Object value) {
         String result;
-        if (instanceToLog == null) { // just protecting from NPE in that simple way \\
+        if (instanceToLog == null) { // just protecting from NPE in that simple way
             result = stubForNullElement;
         } else {
             result = instanceToLog.toString();
         }
-        return result + connector + value; // no need to use StringBuilder here for only 1 operation \\
+        return result + connector + value; // no need to use StringBuilder here for only 1 operation
     }
 
     // REMAINING STAFF TO BE WRAPPED FOR HAVING COMPLETE FUNCTIONALITY =============================
