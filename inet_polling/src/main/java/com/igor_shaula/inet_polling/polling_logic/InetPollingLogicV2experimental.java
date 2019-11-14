@@ -30,12 +30,6 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
     @NonNull
     // timestamp of making currently active requests generation - individual for every channel
     private final SparseLongArray oneGenerationAbsTimes = new SparseLongArray(3);
-    //    @NonNull
-    // latch for consider & schedule new generation for the first successful response only
-//    private final SparseBooleanArray oneGenerationResponseFlags = new SparseBooleanArray(3);
-//    @NonNull
-    // latch for consider & schedule new generation for the first happened failed request only
-//    private final SparseBooleanArray oneGenerationFailureFlags = new SparseBooleanArray(3);
     @NonNull
     private final SparseBooleanArray oneGenerationReactionFlags = new SparseBooleanArray(3);
 
@@ -43,19 +37,16 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
     private final OkHttpClient okHttpClient = new OkHttpClient();
     @NonNull
     private final Request requestGoogle = new Request.Builder()
-//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(PollingOptions.HOST_GOOGLE)
             .head() // for reducing of package size in response
             .build();
     @NonNull
     private final Request requestApple = new Request.Builder()
-//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(PollingOptions.HOST_APPLE)
             .get()
             .build();
     @NonNull
     private final Request requestOther = new Request.Builder()
-//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(PollingOptions.HOST_OTHER)
             .get()
             .build();
@@ -65,7 +56,11 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         @Override
         public void run() {
             if (!isPollingAllowed) {
-                L.w(CN , "askAllHostsRunnable ` polling is NOT allowed -> exiting now");
+                L.w(CN , "askHost ` prevented from making requests & loosing battery");
+                return;
+            }
+            if (consumerLink == null) {
+                L.e("consumerLink is null -> no sense to do something if result will be lost");
             }
             if (consumerLink.isConnectivityReadySyncCheck()) {
 //                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
@@ -83,16 +78,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         }
     };
 
-    public InetPollingLogicV2experimental() {
-        L.v(CN); // detection of used variant
-    }
-
     // ---------------------------------------------------------------------------------------------
-
-//    @Override
-//    public boolean isPollingActive() {
-//        return delayedSingleTaskEngine.isCurrentGenerationAlive();
-//    }
 
     public void toggleInetCheck(boolean shouldLaunch) { // main switcher
         isPollingAllowed = shouldLaunch;
@@ -110,17 +96,6 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         }
     }
 
-    @Override
-    protected void updateFirstPollingReactionState(boolean isInetAvailable) {
-
-    }
-
-    @Override
-    protected void askHost() {
-
-    }
-
-    //    @MeDoc("payload for actions in current channel ")
     private void askHost(final int whichOne) {
         final Request request;
         switch (whichOne) {
@@ -133,8 +108,6 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
             default:
                 request = requestOther;
         }
-//        oneGenerationResponseFlags.put(whichOne, true);
-//        oneGenerationFailureFlags.put(whichOne, true);
         oneGenerationReactionFlags.put(whichOne , true);
 
         // this link is created to be reused in closing response body later
@@ -144,7 +117,7 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
         okHttpClient.newCall(request).enqueue(new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call , @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call , @NotNull Response response) {
                 // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
@@ -155,14 +128,11 @@ public final class InetPollingLogicV2experimental extends InetPollingLogic {
                 onRequestStateChanged(whichOne , isResponseReceivedInTime);
 
                 appointNextGenerationFromTheFirstReactionConsideringDelay(timeForThisRequest , whichOne);
-//                try {
+
                 responseBody[0] = response.body();
                 if (responseBody[0] != null) {
                     responseBody[0].close(); // not needed if response's body-method hasn't been called
                 }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             }
 
             @Override

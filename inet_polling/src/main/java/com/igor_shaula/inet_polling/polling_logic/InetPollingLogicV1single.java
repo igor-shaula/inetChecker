@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import utils.L;
@@ -17,14 +19,40 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 
     private static final String CN = "InetPollingLogicV1single";
 
-    public InetPollingLogicV1single() {
-        L.i(CN , "used");
-    }
+    @NonNull
+    private final OkHttpClient okHttpClient = new OkHttpClient();
+    @NonNull
+    private final Request googleRequest = new Request.Builder()
+//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
+            .url(PollingOptions.HOST_GOOGLE) // this should be changed later
+            .get()
+            .build();
+
+    @NonNull
+    private final Runnable pollingRunnable = new Runnable() {
+        // main holder of payload to be done right after the new generation is started
+        @Override
+        public void run() {
+            if (consumerLink != null && consumerLink.isConnectivityReadySyncCheck()) {
+//                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
+                if (isPollingAllowed) {
+                    askHost();
+                } else {
+                    L.w(CN , "askHost ` prevented from making requests & loosing battery");
+                }
+            } else {
+                // updating main flag for this case of connectivity absence
+                updateFirstPollingReactionState(false); // pollingRunnable
+                consumerLink.onInetStateChanged(false);
+            }
+        }
+    };
 
     // ---------------------------------------------------------------------------------------------
 
     @Override
     public void toggleInetCheck(boolean shouldLaunch) { // main switcher
+        isPollingAllowed = shouldLaunch;
         if (shouldLaunch) {
             // potentially we can have here many commands to launch many executors - but only one is enough
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
@@ -42,7 +70,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
                 }
             }
         } else { // launch is prohibited - so in any state of engine we must stop it here
-            isPollingAllowed = false; // preventing from future possible invocations
+//            isPollingAllowed = false; // preventing from future possible invocations
             delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheck
             L.v(CN , "toggleInetCheck ` stopped current generation of polling");
             if (consumerLink != null) {
@@ -51,13 +79,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         }
     }
 
-    //    @MeDoc("payload for actions in current channel ")
-    @Override
-    protected void askHost() {
-        if (!isPollingAllowed) {
-            L.w(CN , "askHost ` prevented from making requests & loosing battery");
-            return;
-        }
+    private void askHost() {
 
         // this link is created to be reused in closing response body later
         final ResponseBody[] responseBody = new ResponseBody[1];
@@ -124,6 +146,17 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
         oneGenerationAbsTime = System.currentTimeMillis();
         // updating time of making the request in the current channel
     } // askHost
+
+    private void updateFirstPollingReactionState(boolean isInetAvailable) {
+        if (isWaitingForFirstResultFromPolling) {
+            if (consumerLink != null) {
+                consumerLink.onFirstResultReceived(isInetAvailable);
+            } else {
+                L.e("consumerLink is null - it cannot receive first polling reaction state");
+            }
+            isWaitingForFirstResultFromPolling = false;
+        }
+    }
 
     private void appointNextGenerationConsideringThisDelay(long timeForThisRequest) {
         delayedSingleTaskEngine.stopCurrentGeneration();
