@@ -3,11 +3,12 @@ package com.igor_shaula.inet_polling;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.igor_shaula.inet_polling.polling_engine.DelayedSingleTaskEngineExecutor;
 import com.igor_shaula.inet_polling.polling_logic.InetPollingLogicV1single;
-import utils.L;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import utils.L;
 
 public abstract class InetPollingLogic {
 
@@ -33,7 +34,7 @@ public abstract class InetPollingLogic {
         @Override
         public void run() {
             if (consumerLink != null && consumerLink.isConnectivityReadySyncCheck()) {
-//                L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
+//                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
                 askHost();
             } else {
                 // updating main flag for this case of connectivity absence
@@ -43,17 +44,17 @@ public abstract class InetPollingLogic {
         }
     };
     protected boolean isWaitingForFirstResultFromPolling = true;
-    protected boolean isPollingAllowedInGeneral;
+    protected boolean isPollingAllowed;
     protected long oneGenerationAbsTime;
 
     // link to invoking class back - to change main flag & check connectivity which requires Context
     @Nullable
     protected PollingResultsConsumer consumerLink;
     // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling
-    @SuppressWarnings("NullableProblems")
+
     // initialized in InetPollingLogicV1single constructor & used only there
     @NonNull
-    protected DelayedSingleTaskEngine delayedSingleTaskEngine;
+    protected DelayedSingleTaskEngine delayedSingleTaskEngine = new DelayedSingleTaskEngineExecutor();
 
     @Nullable
     private static InetPollingLogic thisInstance;
@@ -76,7 +77,7 @@ public abstract class InetPollingLogic {
     public abstract boolean isPollingActive();
 
     // switch on or off - the only useful handling needed from outside
-    public abstract void toggleInetCheckNow(boolean shouldLaunch);
+    public abstract void toggleInetCheck(boolean shouldLaunch);
 
     protected abstract void updateFirstPollingReactionState(boolean isInetAvailable);
 

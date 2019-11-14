@@ -23,7 +23,7 @@ final class DelayedSingleTaskEngineTimer {
             @Override
             public void run() {
 //                if (inetPollingLogic.isConnectivityReadySyncCheck()) {
-//                    L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
+//                    L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
 //                    inetPollingLogic.askHost(0); // Google
 //                    inetPollingLogic.askHost(1); // Apple
 //                    inetPollingLogic.askHost(2); // Amazon

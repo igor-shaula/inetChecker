@@ -66,7 +66,7 @@ public final class Z_InetPollingLogicPrevious { // 1st realization
         @Override
         public void run() {
             if (consumerLink.isConnectivityReadySyncCheck()) {
-//                L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
+//                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
                 askHost(0); // Google
                 askHost(1); // Apple
                 askHost(2); // Amazon
@@ -94,17 +94,17 @@ public final class Z_InetPollingLogicPrevious { // 1st realization
 
     // ---------------------------------------------------------------------------------------------
 
-    public void toggleInetCheckNow(boolean shouldLaunch) {
+    public void toggleInetCheck(boolean shouldLaunch) {
         if (shouldLaunch) {
             // potentially we can have here many commands to launch many executors - but only one is enough
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
-                L.v(CN, "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
+                L.v(CN, "toggleInetCheck ` avoided duplication of oneGenerationExecutor");
             } else {
 //                timeDeltaFromStartedFailures = 0; // resetting for future possible attempts with onFailure
                 delayedSingleTaskEngine.appointNextGeneration(askAllHostsRunnable, 0);
             }
         } else {
-            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow
+            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheck
         }
     }
 

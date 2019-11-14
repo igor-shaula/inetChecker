@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         final InetPollingLogic inetPollingLogic = InetPollingLogic.getInstance(pollingResultsConsumer);
-        inetPollingLogic.toggleInetCheckNow(launchFlag);
+        inetPollingLogic.toggleInetCheck(launchFlag);
         if (tvStatus == null) return;
         if (inetPollingLogic.isPollingActive()) {
             tvStatus.setText(R.string.pollingStatusEnabled);

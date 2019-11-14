@@ -67,7 +67,7 @@ public final class InetPollingLogicV1rejected extends InetPollingLogic {
         @Override
         public void run() {
             if (consumerLink.isConnectivityReadySyncCheck()) {
-//                L.v(CN, "toggleInetCheckNow ` 1 second tick at " + System.currentTimeMillis());
+//                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
                 askHost(0); // Google
                 askHost(1); // Apple
                 askHost(2); // Amazon
@@ -102,18 +102,18 @@ public final class InetPollingLogicV1rejected extends InetPollingLogic {
         return delayedSingleTaskEngine.isCurrentGenerationAlive();
     }
 
-    public void toggleInetCheckNow(boolean shouldLaunch) { // main switcher
+    public void toggleInetCheck(boolean shouldLaunch) { // main switcher
         if (shouldLaunch) {
             // potentially we can have here many commands to launch many executors - but only one is enough
             if (delayedSingleTaskEngine.isCurrentGenerationAlive()) {
-                L.v(CN, "toggleInetCheckNow ` avoided duplication of oneGenerationExecutor");
+                L.v(CN, "toggleInetCheck ` avoided duplication of oneGenerationExecutor");
             } else {
                 delayedSingleTaskEngine.appointNextGeneration(askAllHostsRunnable, 0);
-                L.v(CN, "toggleInetCheckNow ` launched new generation of polling");
+                L.v(CN, "toggleInetCheck ` launched new generation of polling");
             }
         } else {
-            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheckNow
-            L.v(CN, "toggleInetCheckNow ` stopped current generation of polling");
+            delayedSingleTaskEngine.stopCurrentGeneration(); // toggleInetCheck
+            L.v(CN, "toggleInetCheck ` stopped current generation of polling");
         }
     }
 
