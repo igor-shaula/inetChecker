@@ -15,9 +15,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import utils.L;
 
-public final class InetPollingLogicV1single extends InetPollingLogic {
+public final class InetPollingLogicSingle extends InetPollingLogic {
 
-    private static final String CN = "InetPollingLogicV1single";
+    private static final String CN = "InetPollingLogicSingle";
 
     @NonNull
     private final OkHttpClient okHttpClient = new OkHttpClient();

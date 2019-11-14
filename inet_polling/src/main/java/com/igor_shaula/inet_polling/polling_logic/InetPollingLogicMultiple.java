@@ -20,9 +20,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import utils.L;
 
-public final class InetPollingLogicV2experimental extends InetPollingLogic {
+public final class InetPollingLogicMultiple extends InetPollingLogic {
 
-    private static final String CN = "InetPollingLogicV2experimental";
+    private static final String CN = "InetPollingLogicMultiple";
 
     @NonNull
     // result information per channel

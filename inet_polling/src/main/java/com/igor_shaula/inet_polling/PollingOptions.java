@@ -4,7 +4,7 @@ public final class PollingOptions {
     // TODO: 15.11.2019 make all needed options configurable later
 
     public static final String HOST_GOOGLE = "http://google.com";
-    public static final String HOST_APPLE = "http://apple.com";
+    public static final String HOST_APPLE = "http://captive.apple.com";
     public static final String HOST_OTHER = "http://amazon.com";
     //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG
     public static final long POLLING_DELAY = 1000; // millis

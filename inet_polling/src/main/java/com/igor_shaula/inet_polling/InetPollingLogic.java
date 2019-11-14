@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.igor_shaula.inet_polling.polling_engine.DelayedSingleTaskEngineExecutor;
-import com.igor_shaula.inet_polling.polling_logic.InetPollingLogicV2experimental;
+import com.igor_shaula.inet_polling.polling_logic.InetPollingLogicSingle;
 
 import utils.L;
 
@@ -35,8 +35,8 @@ public abstract class InetPollingLogic {
     public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
         if (thisInstance == null) {
             /* selection of concrete logic agent and polling engine have to be on the same level */
-//            thisInstance = new InetPollingLogicV1single();
-            thisInstance = new InetPollingLogicV2experimental();
+            thisInstance = new InetPollingLogicSingle();
+//            thisInstance = new InetPollingLogicMultiple();
         }
         thisInstance.consumerLink = pollingResultsConsumer;
         L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
