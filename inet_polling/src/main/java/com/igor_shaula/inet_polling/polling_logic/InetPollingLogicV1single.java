@@ -3,6 +3,7 @@ package com.igor_shaula.inet_polling.polling_logic;
 import androidx.annotation.NonNull;
 
 import com.igor_shaula.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.PollingOptions;
 import com.igor_shaula.inet_polling.PollingResultsConsumer;
 
 import java.io.IOException;
@@ -22,12 +23,6 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
     }
 
     // ---------------------------------------------------------------------------------------------
-
-    @Override
-    public boolean isPollingActive() { // main getter of polling agent state
-        return delayedSingleTaskEngine.isCurrentGenerationAlive();
-        // that's because consumer of this class must not know about its inner specifics
-    }
 
     @Override
     public void toggleInetCheck(boolean shouldLaunch) { // main switcher
@@ -105,7 +100,7 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 //                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTime;
 //                L.v(CN, "askHost ` onResponse ` timeForThisRequest = " + timeForThisRequest);
-                final boolean isResponseReceivedInTime = timeForThisRequest <= POLLING_TIMEOUT;
+                final boolean isResponseReceivedInTime = timeForThisRequest <= PollingOptions.POLLING_TIMEOUT;
 //                L.v(CN, "askHost ` onResponse ` isResponseReceivedInTime = " + isResponseReceivedInTime);
 
                 updateFirstPollingReactionState(isResponseReceivedInTime); // onResponse
@@ -129,21 +124,11 @@ public final class InetPollingLogicV1single extends InetPollingLogic {
 //        L.v(CN, "askHost ` request was maid: " + bankRequest);
         oneGenerationAbsTime = System.currentTimeMillis();
         // updating time of making the request in the current channel
-    }
-
-    @Override
-    protected void updateFirstPollingReactionState(boolean isInetAvailable) {
-        if (isWaitingForFirstResultFromPolling) {
-            isWaitingForFirstResultFromPolling = false;
-            if (consumerLink != null) {
-                consumerLink.onFirstResultReceived(isInetAvailable);
-            }
-        }
-    }
+    } // askHost
 
     private void appointNextGenerationConsideringThisDelay(long timeForThisRequest) {
         delayedSingleTaskEngine.stopCurrentGeneration();
-        long delayBeforeNextGeneration = POLLING_DELAY - timeForThisRequest;
+        long delayBeforeNextGeneration = PollingOptions.POLLING_DELAY - timeForThisRequest;
         if (delayBeforeNextGeneration < 0) { // for the case of too long requests
             delayBeforeNextGeneration = 0;
         }

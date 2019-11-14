@@ -14,20 +14,31 @@ public abstract class InetPollingLogic {
 
     private static final String CN = "InetPollingLogic";
 
-    private static final String HOST_GOOGLE = "http://google.com";
-    //    private static final long POLLING_DELAY = 10_000; // millis FOR DEBUG
-    protected static final long POLLING_DELAY = 1000; // millis
-    //    private static final long POLLING_TIMEOUT = 100; // millis FOR DEBUG
-    protected static final long POLLING_TIMEOUT = 3000; // millis
+    // ALL FIELDS ----------------------------------------------------------------------------------
+
+    protected boolean isWaitingForFirstResultFromPolling = true;
+    protected boolean isPollingAllowed = false; // has to be enabled explicitly
+    protected long oneGenerationAbsTime; // reset every time in askHost() implementation
+
+    @Nullable
+    private static InetPollingLogic thisInstance;
+
+    // link to invoking class back - to change main flag & check connectivity which requires Context
+    @Nullable
+    protected PollingResultsConsumer consumerLink;
+    // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling
 
     @NonNull
-    protected final OkHttpClient okHttpClient = new OkHttpClient();
-    @NonNull
-    protected final Request googleRequest = new Request.Builder()
-//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
-            .url(HOST_GOOGLE) // this should be changed later
-            .get()
-            .build();
+    public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
+        if (thisInstance == null) {
+            thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
+        } else {
+            thisInstance.consumerLink = pollingResultsConsumer;
+            L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
+        }
+        return thisInstance;
+    }
+
     @NonNull
     protected final Runnable pollingRunnable = new Runnable() {
         // main holder of payload to be done right after the new generation is started
@@ -43,43 +54,43 @@ public abstract class InetPollingLogic {
             }
         }
     };
-    protected boolean isWaitingForFirstResultFromPolling = true;
-    protected boolean isPollingAllowed;
-    protected long oneGenerationAbsTime;
 
-    // link to invoking class back - to change main flag & check connectivity which requires Context
-    @Nullable
-    protected PollingResultsConsumer consumerLink;
-    // abstraction for mechanism of scheduling delayed tasks which start every new generation of polling
-
-    // initialized in InetPollingLogicV1single constructor & used only there
     @NonNull
     protected DelayedSingleTaskEngine delayedSingleTaskEngine = new DelayedSingleTaskEngineExecutor();
 
-    @Nullable
-    private static InetPollingLogic thisInstance;
-
     @NonNull
-    public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
-        if (thisInstance == null) {
-            thisInstance = new InetPollingLogicV1single(pollingResultsConsumer);
-        } else {
-            thisInstance.consumerLink = pollingResultsConsumer;
-            L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
+    protected final OkHttpClient okHttpClient = new OkHttpClient();
+    @NonNull
+    protected final Request googleRequest = new Request.Builder()
+//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
+            .url(PollingOptions.HOST_GOOGLE) // this should be changed later
+            .get()
+            .build();
+
+    // ALL METHODS ---------------------------------------------------------------------------------
+
+    // switch on or off - the only useful handling needed from outside
+    public abstract void toggleInetCheck(boolean shouldLaunch);
+
+    protected abstract void askHost();
+
+    public boolean isPollingActive() { // main getter of polling agent state
+        return delayedSingleTaskEngine.isCurrentGenerationAlive();
+        // that's because consumer of this class must not know about its inner specifics
+    }
+
+    protected void updateFirstPollingReactionState(boolean isInetAvailable) {
+        if (isWaitingForFirstResultFromPolling) {
+            if (consumerLink != null) {
+                consumerLink.onFirstResultReceived(isInetAvailable);
+            } else {
+                L.e("consumerLink is null - it cannot receive first polling reaction state");
+            }
+            isWaitingForFirstResultFromPolling = false;
         }
-        return thisInstance;
     }
 
     public void clearCurrentConsumerLink() {
         consumerLink = null;
     }
-
-    public abstract boolean isPollingActive();
-
-    // switch on or off - the only useful handling needed from outside
-    public abstract void toggleInetCheck(boolean shouldLaunch);
-
-    protected abstract void updateFirstPollingReactionState(boolean isInetAvailable);
-
-    protected abstract void askHost();
 }
