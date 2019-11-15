@@ -34,13 +34,14 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
         @Override
         public void run() {
             if (consumerLink != null && consumerLink.isConnectivityReadySyncCheck()) {
-//                L.v(CN, "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
+                L.v(CN , "toggleInetCheck ` 1 second tick at " + System.currentTimeMillis());
                 if (isPollingAllowed) {
                     askHost();
                 } else {
                     L.w(CN , "askHost ` prevented from making requests & loosing battery");
                 }
             } else {
+                L.v(CN , "pollingRunnable - else");
                 // updating main flag for this case of connectivity absence
                 updateFirstPollingReactionState(false); // pollingRunnable
                 consumerLink.onInetStateChanged(false);
@@ -91,13 +92,12 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
             public void onFailure(@NonNull Call call , @NonNull IOException e) {
                 // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
-//                L.v(CN, "askHost ` onFailure in " + currentMillisNow);
-//                L.v(CN, "askHost ` onFailure ` request = " + request);
-//                if (e != null) {
-//                    L.v(CN, "askHost ` onFailure ` getLocalizedMessage = " + e.getLocalizedMessage());
-//                }
+                L.v(CN , "askHost ` onFailure in " + currentMillisNow);
+                L.v(CN , "askHost ` onFailure ` call = " + call);
+                L.v(CN , "askHost ` onFailure ` getLocalizedMessage = " + e.getLocalizedMessage());
+
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTime;
-//                L.v(CN, "askHost ` onFailure ` timeForThisRequest = " + timeForThisRequest);
+                L.v(CN , "askHost ` onFailure ` timeForThisRequest = " + timeForThisRequest);
 
                 updateFirstPollingReactionState(false); // onFailure
 
@@ -108,8 +108,8 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
 
                 appointNextGenerationConsideringThisDelay(timeForThisRequest);
 
-//                final boolean isResponseReceivedInTime = timeForThisRequest <= POLLING_TIMEOUT;
-//                L.v(CN, "askHost ` onFailure ` isResponseReceivedInTime = " + isResponseReceivedInTime);
+                final boolean isResponseReceivedInTime = timeForThisRequest <= PollingOptions.POLLING_TIMEOUT;
+                L.v(CN , "askHost ` onFailure ` isResponseReceivedInTime = " + isResponseReceivedInTime);
 
                 // if response failed in after timeout - we'll collect false for it = real offline
             }
@@ -118,15 +118,15 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
             public void onResponse(@NonNull Call call , @NonNull Response response) {
                 // immediately detecting timeout - even before logging
                 final long currentMillisNow = System.currentTimeMillis();
-//                L.v(CN, "askHost ` onResponse in " + currentMillisNow);
+                L.v(CN , "askHost ` onResponse in " + currentMillisNow);
                 final long timeForThisRequest = currentMillisNow - oneGenerationAbsTime;
-//                L.v(CN, "askHost ` onResponse ` timeForThisRequest = " + timeForThisRequest);
+                L.v(CN , "askHost ` onResponse ` timeForThisRequest = " + timeForThisRequest);
                 final boolean isResponseReceivedInTime = timeForThisRequest <= PollingOptions.POLLING_TIMEOUT;
-//                L.v(CN, "askHost ` onResponse ` isResponseReceivedInTime = " + isResponseReceivedInTime);
+                L.v(CN , "askHost ` onResponse ` isResponseReceivedInTime = " + isResponseReceivedInTime);
 
                 updateFirstPollingReactionState(isResponseReceivedInTime); // onResponse
 
-//                L.v(CN, "askHost ` onResponse ` response.code() = " + response.code());
+                L.v(CN , "askHost ` onResponse ` response.code() = " + response.code());
                 if (consumerLink != null) {
                     consumerLink.onInetStateChanged(isResponseReceivedInTime);
                 }
