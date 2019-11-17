@@ -16,12 +16,18 @@ import com.igor_shaula.inet_polling.PollingResultsConsumer;
 
 import utils.L;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements PollingResultsConsumer {
 
-    private static final String TAG = "MainActivity";
+    private static final String CN = "MainActivity";
 
     @Nullable
     private TextView tvStatus;
+
+    @Nullable
+    InetPollingLogic inetPollingLogic;
+
+    // LIFECYCLE ===================================================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,40 +54,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        inetPollingLogic = InetPollingLogic.getInstance(this);
+    }
+
+    @Override
+    protected void onStop() {
+        if (inetPollingLogic != null) {
+            inetPollingLogic.clearCurrentPollingSetting();
+            inetPollingLogic = null;
+            L.i(CN , "onStop ` nulled inetPollingLogic");
+        }
+        super.onStop();
     }
 
     private void togglePolling(boolean launchFlag) {
-        PollingResultsConsumer pollingResultsConsumer = new PollingResultsConsumer() {
-
-            @Override
-            public boolean isConnectivityReadySyncCheck() {
-                return true;
-            }
-
-            @Override
-            public void onTogglePollingState(boolean isPollingActive) {
-                L.d(TAG , "onTogglePollingState: isPollingActive = " + isPollingActive);
-            }
-
-            @Override
-            public void onFirstResultReceived(boolean isInetAvailable) {
-                L.d(TAG , "onFirstResultReceived: isInetAvailable = " + isInetAvailable);
-            }
-
-            @Override
-            public void onInetStateChanged(boolean isAvailable) {
-                L.d(TAG , "onInetStateChanged: isAvailable = " + isAvailable);
-            }
-        };
-        final InetPollingLogic inetPollingLogic = InetPollingLogic.getInstance(pollingResultsConsumer);
-        inetPollingLogic.toggleInetCheck(launchFlag);
+        if (inetPollingLogic != null) {
+            inetPollingLogic.toggleInetCheck(launchFlag);
+        }
         if (tvStatus == null) return;
-        if (inetPollingLogic.isPollingActive()) {
+        if (inetPollingLogic != null && inetPollingLogic.isPollingActive()) {
             tvStatus.setText(R.string.pollingStatusEnabled);
         } else {
             tvStatus.setText(R.string.pollingStatusDisabled);
         }
     }
+
+    // MENU ========================================================================================
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,4 +103,34 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    // IMPLEMENTATIONS =============================================================================
+
+    @Override
+    public int whichLogic() {
+        return 1; // 1 for single & 3 for multiple - at the moment
+    }
+
+    @Override
+    public boolean isConnectivityReadySyncCheck() {
+        return true;
+    }
+
+    @Override
+    public void onTogglePollingState(boolean isPollingActive) {
+        L.d(CN , "onTogglePollingState: isPollingActive = " + isPollingActive);
+    }
+
+    @Override
+    public void onFirstResultReceived(boolean isInetAvailable) {
+        L.d(CN , "onFirstResultReceived: isInetAvailable = " + isInetAvailable);
+    }
+
+    @Override
+    public void onInetStateChanged(boolean isAvailable) {
+        L.d(CN , "onInetStateChanged: isAvailable = " + isAvailable);
+    }
+
+    // ALL PRIVATE =================================================================================
+
 }

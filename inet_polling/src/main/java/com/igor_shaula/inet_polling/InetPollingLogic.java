@@ -36,8 +36,16 @@ public abstract class InetPollingLogic {
     public static InetPollingLogic getInstance(@NonNull PollingResultsConsumer pollingResultsConsumer) {
         if (thisInstance == null) {
             /* selection of concrete logic agent and polling engine have to be on the same level */
-//            thisInstance = new InetPollingLogicSingle();
-            thisInstance = new InetPollingLogicMultiple();
+            switch (pollingResultsConsumer.whichLogic()) {
+                case 1:
+                    thisInstance = new InetPollingLogicSingle();
+                    break;
+                case 3:
+                    thisInstance = new InetPollingLogicMultiple();
+                    break;
+                default:
+                    L.e(CN , "this variant of logic is not specified");
+            }
         }
         thisInstance.consumerLink = pollingResultsConsumer;
         L.w(CN , "getInstance ` consumerLink updated with hash: " + pollingResultsConsumer.hashCode());
@@ -52,6 +60,7 @@ public abstract class InetPollingLogic {
     public void clearCurrentPollingSetting() {
         consumerLink = null;
         thisInstance = null;
+        L.i(CN , "clearCurrentPollingSetting ` nulled consumerLink & thisInstance");
     }
 
     // switch on or off - the only useful handling needed from outside
