@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
         tvStatus = findViewById(R.id.tvStatus);
 
         final FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setActivated(true);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

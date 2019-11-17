@@ -3,5 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="pollingStatusEnabled">polling is active</string>
     <string name="pollingStatusDisabled">polling is disabled</string>
+    <string name="initialTextForStartingAction">just click red button to get inet-info</string>
 
 </resources>
