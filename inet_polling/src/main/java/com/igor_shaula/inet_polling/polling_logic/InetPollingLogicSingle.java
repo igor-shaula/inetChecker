@@ -3,6 +3,7 @@ package com.igor_shaula.inet_polling.polling_logic;
 import androidx.annotation.NonNull;
 
 import com.igor_shaula.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.InetRequestResult;
 import com.igor_shaula.inet_polling.PollingOptions;
 
 import java.io.IOException;
@@ -23,7 +24,6 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
     private final OkHttpClient okHttpClient = new OkHttpClient();
     @NonNull
     private final Request googleRequest = new Request.Builder()
-//            .addHeader(C.ACCEPT, C.APPLICATION_JSON)
             .url(PollingOptions.HOST_GOOGLE) // this should be changed later
             .get()
             .build();
@@ -44,10 +44,13 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
                 L.v(CN , "pollingRunnable - else");
                 // updating main flag for this case of connectivity absence
                 updateFirstPollingReactionState(false); // pollingRunnable
-                consumerLink.onInetStateChanged(false);
+                consumerLink.onInetResult(new InetRequestResult()); // failed by default
             }
         }
     };
+
+    private final InetRequestResult inetRequestResult = new InetRequestResult();
+    // creating here to have one instance instead of many
 
     // ---------------------------------------------------------------------------------------------
 
@@ -86,6 +89,8 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
         final ResponseBody[] responseBody = new ResponseBody[1];
         // A connection to https://www.google.com/ was leaked. Did you forget to close a response body?
 
+        inetRequestResult.prepareForNewData();
+
         okHttpClient.newCall(googleRequest).enqueue(new Callback() {
 
             @Override
@@ -101,9 +106,10 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
 
                 updateFirstPollingReactionState(false); // onFailure
 
-//                consumerLink.onInetStateChanged(isResponseReceivedInTime);
                 if (consumerLink != null) {
-                    consumerLink.onInetStateChanged(false);
+                    inetRequestResult.setTimeForRequest(timeForThisRequest);
+                    inetRequestResult.setInetAvailable(false);
+                    consumerLink.onInetResult(inetRequestResult);
                 }
 
                 appointNextGenerationConsideringThisDelay(timeForThisRequest);
@@ -128,9 +134,11 @@ public final class InetPollingLogicSingle extends InetPollingLogic {
 
                 L.v(CN , "askHost ` onResponse ` response.code() = " + response.code());
                 if (consumerLink != null) {
-                    consumerLink.onInetStateChanged(isResponseReceivedInTime);
+                    inetRequestResult.setTimeForRequest(timeForThisRequest);
+                    inetRequestResult.setInetAvailable(isResponseReceivedInTime);
+                    consumerLink.onInetResult(inetRequestResult);
                 }
-//                consumerLink.onInetStateChanged(isResponseReceivedInTime && response.code() == 401);
+//                consumerLink.onInetResult(isResponseReceivedInTime && response.code() == 401);
                 // we don't look on code here because it's onResponse - not onFailure invocation
 
                 appointNextGenerationConsideringThisDelay(timeForThisRequest);

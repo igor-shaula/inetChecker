@@ -28,7 +28,7 @@ final class DelayedSingleTaskEngineTimer {
 //                    inetPollingLogic.askHost(1); // Apple
 //                    inetPollingLogic.askHost(2); // Amazon
 //                } else {
-//                    inetPollingLogic.onInetStateChanged(false);
+//                    inetPollingLogic.onInetResult(false);
 //                }
             }
         };

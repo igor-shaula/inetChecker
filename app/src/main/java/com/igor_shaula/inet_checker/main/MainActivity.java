@@ -6,12 +6,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.igor_shaula.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.InetRequestResult;
 import com.igor_shaula.inet_polling.PollingResultsConsumer;
 
 import utils.L;
@@ -128,8 +130,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onInetStateChanged(boolean isAvailable) {
-        L.d(CN , "onInetStateChanged: isAvailable = " + isAvailable);
+    public void onInetResult(@NonNull InetRequestResult inetRequestResult) {
+        L.d(CN , "onInetResult: timeForRequest = " + inetRequestResult.getTimeForRequest());
+        L.d(CN , "onInetResult: isAvailable = " + inetRequestResult.isInetAvailable());
     }
 
     // ALL PRIVATE =================================================================================

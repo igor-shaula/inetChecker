@@ -1,5 +1,7 @@
 package com.igor_shaula.inet_polling;
 
+import androidx.annotation.NonNull;
+
 public interface PollingResultsConsumer {
 
     int whichLogic();
@@ -10,5 +12,5 @@ public interface PollingResultsConsumer {
 
     void onFirstResultReceived(boolean isInetAvailable);
 
-    void onInetStateChanged(boolean isAvailable);
+    void onInetResult(@NonNull InetRequestResult isAvailable);
 }

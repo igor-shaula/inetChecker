@@ -6,6 +6,7 @@ import android.util.SparseLongArray;
 import androidx.annotation.NonNull;
 
 import com.igor_shaula.inet_polling.InetPollingLogic;
+import com.igor_shaula.inet_polling.InetRequestResult;
 import com.igor_shaula.inet_polling.PollingOptions;
 
 import org.jetbrains.annotations.NotNull;
@@ -73,10 +74,16 @@ public final class InetPollingLogicMultiple extends InetPollingLogic {
                 inetAccessibleInChannel[1] = false;
                 inetAccessibleInChannel[2] = false;
                 // updating main flag for this case of connectivity absence
-                consumerLink.onInetStateChanged(false);
+                consumerLink.onInetResult(new InetRequestResult()); // failed by default
             }
         }
     };
+    @NonNull
+    private InetRequestResult resultFromGoogle = new InetRequestResult();
+    @NonNull
+    private InetRequestResult resultFromApple = new InetRequestResult();
+    @NonNull
+    private InetRequestResult resultFromAmazon = new InetRequestResult();
 
     // ---------------------------------------------------------------------------------------------
 
@@ -98,21 +105,27 @@ public final class InetPollingLogicMultiple extends InetPollingLogic {
 
     private void askHost(final int whichOne) {
         final Request request;
+        final InetRequestResult result;
         switch (whichOne) {
             case 0:
                 request = requestGoogle;
+                result = resultFromGoogle;
                 break;
             case 1:
                 request = requestApple;
+                result = resultFromApple;
                 break;
             default:
                 request = requestOther;
+                result = resultFromAmazon;
         }
         oneGenerationReactionFlags.put(whichOne , true);
 
         // this link is created to be reused in closing response body later
         final ResponseBody[] responseBody = new ResponseBody[1];
         // A connection to https://www.google.com/ was leaked. Did you forget to close a response body?
+
+        result.prepareForNewData();
 
         okHttpClient.newCall(request).enqueue(new Callback() {
 
@@ -125,7 +138,9 @@ public final class InetPollingLogicMultiple extends InetPollingLogic {
 //                L.v(CN, "askHost ` onResponse ` timeForThisRequest = " + timeForThisRequest);
                 final boolean isResponseReceivedInTime = timeForThisRequest < PollingOptions.POLLING_TIMEOUT;
 //                L.v(CN, "askHost ` onResponse ` isResponseReceivedInTime = " + isResponseReceivedInTime);
-                onRequestStateChanged(whichOne , isResponseReceivedInTime);
+                result.setTimeForRequest(timeForThisRequest);
+                result.setInetAvailable(isResponseReceivedInTime);
+                onRequestStateChanged(whichOne , result);
 
                 appointNextGenerationFromTheFirstReactionConsideringDelay(timeForThisRequest , whichOne);
 
@@ -153,7 +168,9 @@ public final class InetPollingLogicMultiple extends InetPollingLogic {
 //                    oneGenerationFailureFlags.clear();
 //                }
 
-                onRequestStateChanged(whichOne , false);
+                result.setTimeForRequest(timeForThisRequest);
+                result.setInetAvailable(false);
+                onRequestStateChanged(whichOne , result);
 
 //                final boolean isResponseReceivedInTime = timeForThisRequest <= POLLING_TIMEOUT;
 //                L.v(CN, "askHost ` onFailure ` isResponseReceivedInTime = " + isResponseReceivedInTime);
@@ -187,14 +204,17 @@ public final class InetPollingLogicMultiple extends InetPollingLogic {
         L.v(CN , "new oneGenerationExecutor scheduled in: " + delayBeforeNextGeneration);
     }
 
-    private void onRequestStateChanged(int whichOne , boolean isInetAvailable) {
-        inetAccessibleInChannel[whichOne] = isInetAvailable;
+    private void onRequestStateChanged(int whichOne , @NonNull InetRequestResult result) {
+        inetAccessibleInChannel[whichOne] = result.isInetAvailable();
         if (consumerLink == null) return;
         // the main check of request's result in every channel
         if (inetAccessibleInChannel[0] || inetAccessibleInChannel[1] || inetAccessibleInChannel[2]) {
-            consumerLink.onInetStateChanged(true);
+//            consumerLink.onInetResult(true);
+            result.setInetAvailable(true);
         } else {
-            consumerLink.onInetStateChanged(false); // all channels fail here
+//            consumerLink.onInetResult(false); // all channels fail here
+            result.setInetAvailable(false);
         }
+        consumerLink.onInetResult(result);
     }
 }
